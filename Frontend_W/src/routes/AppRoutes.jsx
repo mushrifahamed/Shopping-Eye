@@ -4,9 +4,10 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 //Authentication
 import Register from '../screens/Authentication/Register.jsx';
+
 //Loyalty
 import AddLoyalty from '../screens/Loyalty/AddLoyalty.jsx';
-import AddLoyalty from '../screens/Promotion/AddPromotion.jsx';
+import AddPromotion from '../screens/Promotion/AddPromotion.jsx';
 
 
 const AppRoutes = () => {
