@@ -25,7 +25,7 @@ const Login = () => {
 
     try {
       // Call the backend API to log in the user
-      const response = await fetch('/api/users/login', {
+      const response = await fetch('http://localhost:8089/api/users/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -39,7 +39,7 @@ const Login = () => {
 
       const data = await response.json();
       setSuccess('Login successful');
-      setError('');
+      setError('Failed');
       // Optionally, store user data or tokens (e.g., in localStorage)
       // localStorage.setItem('user', JSON.stringify(data));
     } catch (error) {
