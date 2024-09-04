@@ -21,10 +21,12 @@ export const loginAdmin = async (req, res) => {
         return res.status(400).json({ message: 'Invalid password' });
       }
   
-      // Generate a JWT token
-      const token = jwt.sign({ uid: user.uid, email: user.email, type: user.type }, process.env.JWT_SECRET, {
-        expiresIn: '1h', // Token expires in 1 hour
-      });
+      // Generate a JWT token with name included
+      const token = jwt.sign(
+        { uid: user.uid, email: user.email, type: user.type, name: user.name }, // Add name here
+        process.env.JWT_SECRET,
+        { expiresIn: '1h' } // Token expires in 1 hour
+      );
   
       res.status(200).json({
         message: 'Login successful',
@@ -39,7 +41,7 @@ export const loginAdmin = async (req, res) => {
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
-  };
+};
 
 export const registerAdminUser = async (req, res) => {
   const { uid, name, email, password } = req.body;

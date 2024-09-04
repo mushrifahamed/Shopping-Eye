@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
+import Cookies from 'js-cookie'; // Import the js-cookie library
+import { useNavigate } from 'react-router-dom';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const navigate = useNavigate(); // Use the useNavigate hook
 
   // Validate email format
   const validateEmail = (email) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -33,16 +36,21 @@ const Login = () => {
         body: JSON.stringify({ email, password }),
       });
 
+      const data = await response.json();
       if (!response.ok) {
-        throw new Error('Login failed');
+        throw new Error(data.message || 'Login failed');
       }
 
-      const data = await response.json();
+      // Set the token in cookies
+      Cookies.set('token', data.token, { expires: 1, secure: true, sameSite: 'Strict' });
+
       setSuccess('Login successful');
-      setError('Failed');
-      // Optionally, store user data or tokens (e.g., in localStorage)
-      // localStorage.setItem('user', JSON.stringify(data));
+      setError('');
+
+      // Redirect to the dashboard
+      navigate('/dashboard');
     } catch (error) {
+      setSuccess('');
       setError(error.message);
     }
   };
@@ -52,6 +60,7 @@ const Login = () => {
       <div className="w-full max-w-md p-8 space-y-6 bg-white rounded-lg shadow-md">
         <h2 className="text-2xl font-bold text-center text-gray-800">Login</h2>
         {success && <p className="text-sm text-green-500">{success}</p>}
+        {error && <p className="text-sm text-red-500">{error}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
@@ -75,7 +84,6 @@ const Login = () => {
               required
             />
           </div>
-          {error && <p className="text-sm text-red-500">{error}</p>}
           <button
             type="submit"
             className="w-full px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
