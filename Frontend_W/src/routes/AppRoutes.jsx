@@ -17,10 +17,13 @@ const AppRoutes = () => {
 
         {/* Register component */}
         <Route path="/register" element={<Register />} />
+
         {/* loyalty component */}
         <Route path="/AddLoyalty" element={<AddLoyalty />} />
+
         {/* promotion component */}
         <Route path="/AddPromotion" element={<AddPromotion />} />
+        
         {/* promotion component */}
         <Route path="/PromotionList" element={<PromotionList />} />
 
