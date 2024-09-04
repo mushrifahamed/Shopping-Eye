@@ -8,7 +8,7 @@ import Register from '../screens/Authentication/Register.jsx';
 //Loyalty
 import AddLoyalty from '../screens/Loyalty/AddLoyalty.jsx';
 import AddPromotion from '../screens/Promotion/AddPromotion.jsx';
-
+import PromotionList from '../screens/Promotion/PromotionList.jsx';
 
 const AppRoutes = () => {
   return (
@@ -21,6 +21,8 @@ const AppRoutes = () => {
         <Route path="/AddLoyalty" element={<AddLoyalty />} />
         {/* promotion component */}
         <Route path="/AddPromotion" element={<AddPromotion />} />
+        {/* promotion component */}
+        <Route path="/PromotionList" element={<PromotionList />} />
 
 
       </Routes>
