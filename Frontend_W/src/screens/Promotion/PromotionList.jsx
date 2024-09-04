@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Link } from 'react-router-dom';
 
 const PromotionTablePage = () => {
   const [promotions, setPromotions] = useState([]);
@@ -25,6 +26,8 @@ const PromotionTablePage = () => {
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <h2 className="text-2xl font-semibold mb-4 text-gray-800 text-center">Promotion List</h2>
+      <Link to={'../addPromotion'}><button  type="submit"
+            className="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Add</button></Link>
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
           <thead className="bg-gray-100 text-gray-600 uppercase text-sm">
