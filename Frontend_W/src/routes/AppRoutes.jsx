@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 //Authentication
 import Register from '../screens/Authentication/Register.jsx';
+import Login from '../screens/Authentication/Login.jsx';
 
 //Loyalty
 import AddLoyalty from '../screens/Loyalty/AddLoyalty.jsx';
@@ -17,6 +18,7 @@ const AppRoutes = () => {
 
         {/* Register component */}
         <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
 
         {/* loyalty component */}
         <Route path="/AddLoyalty" element={<AddLoyalty />} />
