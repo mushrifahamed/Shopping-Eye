@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const PromotionSchema = new mongoose.Schema({
+const ProductSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
@@ -28,6 +28,6 @@ const PromotionSchema = new mongoose.Schema({
 });
 
 
-const promotion = mongoose.model('promotion', PromotionSchema);
+const Product = mongoose.model('Product', ProductSchema);
 
-export default promotion;
+export default Product;
