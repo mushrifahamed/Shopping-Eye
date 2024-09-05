@@ -5,17 +5,29 @@ import Promotion from '../models/promotionModel.js';
 export const createPromotion = async (req, res) => {
   try {
     const { title, description, start_date, end_date, percentage } = req.body;
-    let imagePath = "uploads/images/No-Image-Placeholder.png";
-    if (req.file && req.file.path) {
-      imagePath = req.file.path;
+    //let imagePath = "uploads/images/No-Image-Placeholder.png";
+    //if (req.file && req.file.path) {
+     // imagePath = req.file.path;
+   // }
+   const latestPromotion = await Promotion.find().sort({ _id: -1 }).limit(1);
+    let ID;
+
+    if (latestPromotion.length !== 0) {
+      const latestId = parseInt(latestPromotion[0].ID.slice(1)); // Remove "P" and convert to integer
+      ID = "P" + String(latestId + 1).padStart(3, "0"); // Increment and pad the number
+    } else {
+      ID = "P001"; // Default first ID
     }
+    console.log('Hi')
+    console.log(title)
 
     const newPromotion = {
+      ID,
       title,
       description,
       start_date,
       end_date,
-      image_url: imagePath,
+      //image_url: imagePath,
       percentage,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
@@ -57,7 +69,15 @@ export const listPromotionById = async (req, res) => {
 // Update a promotion
 export const updatePromotion = async (req, res) => {
   try {
-    const { id } = req.params;
+    const latestPromotion = await Promotion.find().sort({ _id: -1 }).limit(1);
+    let promotionId;
+
+    if (latestPromotion.length !== 0) {
+      const latestId = parseInt(latestPromotion[0].promotionId.slice(1)); // Remove "P" and convert to integer
+      promotionId = "P" + String(latestId + 1).padStart(3, "0"); // Increment and pad the number
+    } else {
+      promotionId = "P001"; // Default first ID
+    }
     const { title, description, start_date, end_date, percentage } = req.body;
     const promotion = await Promotion.findById(id);
 
@@ -76,6 +96,7 @@ export const updatePromotion = async (req, res) => {
     }
 
     const updatedPromotion = {
+      id,
       title,
       description,
       start_date,

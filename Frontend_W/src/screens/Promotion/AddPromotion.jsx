@@ -1,6 +1,11 @@
+import axios from 'axios';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 const PromotionForm = () => {
+
+  const navigate = useNavigate();
   const [promotion, setPromotion] = useState({
     title: '',
     description: '',
@@ -64,19 +69,26 @@ const PromotionForm = () => {
     e.preventDefault();
     if (validate()) {
       console.log('Promotion data:', promotion);
-      if (image) {
-        const formData = new FormData();
-        formData.append('file', image);
-        const response = await fetch('http://localhost:8089/api/createPromotion', {
-          method: 'POST',
-          body: formData,
-        });
-        if (response.ok) {
-          console.log('Image uploaded successfully');
-        } else {
-          console.error('Image upload failed');
-        }
-      }
+      
+      // Rename the local promotion object to avoid conflict
+      const promotionData = {
+        title: promotion.title,
+        description: promotion.description,
+        start_date: promotion.start_date,
+        end_date: promotion.end_date,
+        percentage: promotion.percentage
+      };
+      
+      axios.post('http://localhost:8089/api/promotion/createPromotion', promotionData, {
+        headers: { 'Content-Type': 'application/json' }
+      })
+      .then((res) => {
+        console.log('Promotion created', res.data);
+        navigate("/PromotionList"); // Navigate to PromotionList after successful submission
+      })
+      .catch((error) => {
+        console.error('Error creating promotion', error);
+      });
     }
   };
 

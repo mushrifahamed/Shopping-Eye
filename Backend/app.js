@@ -28,6 +28,6 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 app.use('/api/admin/users', AdminUserRoutes);
 app.use('/api/admin/shops', ShopRoutes);
 app.use('/api/products', productRoutes);  // Add product routes
-//app.use('./api/promotion', promotionRoutes);
+app.use('/api/promotion', promotionRoutes);
 
 export default app;

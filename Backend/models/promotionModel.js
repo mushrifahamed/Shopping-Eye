@@ -2,6 +2,12 @@ import mongoose from 'mongoose';
 
 const promotionSchema = mongoose.Schema(
   {
+   
+    ID: {
+      type: String,
+      required: [true, "Please Enter a ID"],
+      trim: true,
+    },
     title: {
       type: String,
       required: [true, "Please enter a title"],
@@ -40,9 +46,7 @@ const promotionSchema = mongoose.Schema(
       default: Date.now,
     },
   },
-  {
-    timestamps: true, // Automatically adds `createdAt` and `updatedAt` fields
-  }
+
 );
 
 const Promotion = mongoose.model("Promotion", promotionSchema);

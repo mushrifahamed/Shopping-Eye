@@ -6,7 +6,7 @@ const Router = express.Router();
 Router.post('/createPromotion', createPromotion);
 
 // Route to list all promotions
-Router.get('/', listPromotions);
+Router.get('/listPromotions', listPromotions);
 
 // Route to delete a specific promotion by ID
 Router.delete('/:id', deletePromotion);
