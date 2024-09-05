@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 
 const PromotionForm = () => {
   const [promotion, setPromotion] = useState({
@@ -63,36 +62,20 @@ const PromotionForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     if (validate()) {
-      const formData = new FormData();
-      
-      // Append promotion data without the image
-      formData.append('title', promotion.title);
-      formData.append('description', promotion.description);
-      formData.append('start_date', promotion.start_date);
-      formData.append('end_date', promotion.end_date);
-      formData.append('percentage', promotion.percentage);
-      formData.append('created_at', promotion.created_at);
-      formData.append('updated_at', promotion.updated_at);
-      
-      try {
-        const response = await axios.post('https://localhost:8089/api/promotions/createPromotion', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
+      console.log('Promotion data:', promotion);
+      if (image) {
+        const formData = new FormData();
+        formData.append('file', image);
+        const response = await fetch('http://localhost:8089/api/createPromotion', {
+          method: 'POST',
+          body: formData,
         });
-  
-        if (response.status === 200) {
-          console.log('Promotion created successfully');
-          // Optionally reset form state or handle success
+        if (response.ok) {
+          console.log('Image uploaded successfully');
         } else {
-          console.error('Failed to create promotion');
-          // Optionally handle error
+          console.error('Image upload failed');
         }
-      } catch (error) {
-        console.error('An error occurred:', error);
-        // Optionally handle network error
       }
     }
   };

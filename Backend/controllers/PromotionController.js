@@ -1,10 +1,8 @@
-import Promotion from '../models/promotionModel';
-const fs = require("fs");
-const Promotion = require("../models/promotionModel"); // Replace with the actual path
-const moment = require("moment");
+import fs from 'fs';
+import Promotion from '../models/promotionModel.js';
 
 // Create a new promotion
-const createPromotion = async (req, res) => {
+export const createPromotion = async (req, res) => {
   try {
     const { title, description, start_date, end_date, percentage } = req.body;
     let imagePath = "uploads/images/No-Image-Placeholder.png";
@@ -32,7 +30,7 @@ const createPromotion = async (req, res) => {
 };
 
 // List all promotions
-const listPromotions = async (req, res) => {
+export const listPromotions = async (req, res) => {
   try {
     const promotions = await Promotion.find({});
     res.status(200).json(promotions);
@@ -43,7 +41,7 @@ const listPromotions = async (req, res) => {
 };
 
 // Get a promotion by ID
-const listPromotionById = async (req, res) => {
+export const listPromotionById = async (req, res) => {
   try {
     const promotion = await Promotion.findById(req.params.id);
     if (!promotion) {
@@ -57,7 +55,7 @@ const listPromotionById = async (req, res) => {
 };
 
 // Update a promotion
-const updatePromotion = async (req, res) => {
+export const updatePromotion = async (req, res) => {
   try {
     const { id } = req.params;
     const { title, description, start_date, end_date, percentage } = req.body;
@@ -96,7 +94,7 @@ const updatePromotion = async (req, res) => {
 };
 
 // Delete a promotion
-const deletePromotion = async (req, res) => {
+export const deletePromotion = async (req, res) => {
   try {
     const { id } = req.params;
     const promotion = await Promotion.findById(id);
@@ -121,7 +119,7 @@ const deletePromotion = async (req, res) => {
 };
 
 // Get promotions for a specific date range
-const getPromotionsByDateRange = async (req, res) => {
+export const getPromotionsByDateRange = async (req, res) => {
   try {
     const startDate = new Date(req.query.startDate);
     const endDate = new Date(req.query.endDate);
@@ -138,9 +136,5 @@ const getPromotionsByDateRange = async (req, res) => {
   }
 };
 
-exports.createPromotion = createPromotion;
-exports.listPromotions = listPromotions;
-exports.listPromotionById = listPromotionById;
-exports.updatePromotion = updatePromotion;
-exports.deletePromotion = deletePromotion;
-exports.getPromotionsByDateRange = getPromotionsByDateRange;
+
+export default {}
