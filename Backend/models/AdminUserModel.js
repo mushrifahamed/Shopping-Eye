@@ -1,8 +1,8 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcrypt';
 
-const UserSchema = new mongoose.Schema({
-  uid: { type: String, required: true },
+const AdminUserSchema = new mongoose.Schema({
+  aid: { type: String, required: true },
   name: { type: String, required: true },
   email: { type: String, required: true },
   password: { type: String, required: true },
@@ -14,7 +14,7 @@ const UserSchema = new mongoose.Schema({
 });
 
 // Hash the password before saving the user
-UserSchema.pre('save', async function(next) {
+AdminUserSchema.pre('save', async function(next) {
   if (!this.isModified('password')) return next(); // Only hash if the password is new or modified
   
   try {
@@ -27,7 +27,7 @@ UserSchema.pre('save', async function(next) {
 });
 
 // Method to compare hashed password
-UserSchema.methods.comparePassword = async function(candidatePassword) {
+AdminUserSchema.methods.comparePassword = async function(candidatePassword) {
   try {
     return await bcrypt.compare(candidatePassword, this.password);
   } catch (error) {
@@ -35,6 +35,6 @@ UserSchema.methods.comparePassword = async function(candidatePassword) {
   }
 };
 
-const User = mongoose.model('User', UserSchema);
+const AdminUser = mongoose.model('AdminUser', AdminUserSchema);
 
-export default User;
+export default AdminUser;

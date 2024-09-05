@@ -33,12 +33,12 @@ const Register = () => {
 
     try {
       // Call the backend API to register the user
-      const response = await fetch('http://localhost:8089/api/users/register', {
+      const response = await fetch('http://localhost:8089/api/admin/users/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ uid: Date.now().toString(), name, email, password }), // Use name instead of username
+        body: JSON.stringify({ aid: Date.now().toString(), name, email, password }), // Use name instead of username
       });
 
       if (!response.ok) {

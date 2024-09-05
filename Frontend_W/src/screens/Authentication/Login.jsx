@@ -28,7 +28,7 @@ const Login = () => {
 
     try {
       // Call the backend API to log in the user
-      const response = await fetch('http://localhost:8089/api/users/login', {
+      const response = await fetch('http://localhost:8089/api/admin/users/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
