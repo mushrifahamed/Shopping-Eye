@@ -6,7 +6,7 @@ import cors from 'cors'; // Import the cors package
 import AdminUserRoutes from './routes/AdminUserRoutes.js';
 import ShopRoutes from './routes/shopRoutes.js';
 import productRoutes from './routes/productRoute.js';  // Add product routes
-//import promotionRoutes from './routes/promotinRoutes.js'
+import promotionRoutes from './routes/promotionRoutes.js'
 
 const app = express();
 

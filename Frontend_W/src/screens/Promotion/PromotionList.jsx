@@ -9,7 +9,7 @@ const PromotionTablePage = () => {
   useEffect(() => {
     const fetchPromotions = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/promotion');
+        const response = await axios.get('https://localhost:8089/api/promotions/listPromotions');
         setPromotions(response.data);
       } catch (error) {
         console.error('Error fetching promotions:', error);

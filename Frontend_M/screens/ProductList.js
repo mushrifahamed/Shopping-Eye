@@ -8,17 +8,12 @@ const ProductList = ({ navigation }) => {
   const [wishlist, setWishlist] = useState([]);
 
   useEffect(() => {
-    // Fetch products from backend
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get('http://localhost:8089/api/products/getProducts');
-        setProducts(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchProducts();
+    axios.get('http://192.168.7.55:8089/api/products/products').then((res)=>{
+      console.log(res.data)
+      setProducts(res.data)
+    }).catch((err) => {
+      console.log(err)
+    })
   }, []);
 
   const toggleWishlist = (product) => {
@@ -37,7 +32,7 @@ const ProductList = ({ navigation }) => {
           <Image source={{ uri: item.imageUrl }} style={styles.productImage} />
           <View style={styles.productDetails}>
             <Text style={styles.productName}>{item.name}</Text>
-            <Text style={styles.productPrice}>{item.price}</Text>
+            <Text style={styles.productPrice}>LKR {item.price}</Text>
           </View>
           <TouchableOpacity onPress={() => toggleWishlist(item)}>
             <Icon
