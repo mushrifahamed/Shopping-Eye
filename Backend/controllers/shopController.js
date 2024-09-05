@@ -4,6 +4,16 @@ import Shop from '../models/shopModel.js';
 export const addShop = async (req, res) => {
   const { name, image, description, location, contactInfo, products } = req.body;
 
+  // Debugging: Log the request body
+  console.log('Received data:', {
+    name,
+    image,
+    description,
+    location,
+    contactInfo,
+    products,
+  });
+
   try {
     const newShop = new Shop({
       name,
@@ -17,9 +27,11 @@ export const addShop = async (req, res) => {
     await newShop.save();
     res.status(201).json(newShop);
   } catch (error) {
+    console.error('Error creating shop:', error);
     res.status(500).json({ message: error.message });
   }
 };
+
 
 // Get all shops
 export const getShops = async (req, res) => {
