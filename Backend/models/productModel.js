@@ -19,7 +19,7 @@ const ProductSchema = new mongoose.Schema({
   },
   imageUrl: {
     type: String,
-    required: false, // Image URL for the product
+    required: true, // Image URL for the product
   },
   createdAt: {
     type: Date,
