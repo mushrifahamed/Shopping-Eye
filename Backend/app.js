@@ -26,7 +26,7 @@ mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopol
 
 // Routes
 app.use('/api/admin/users', AdminUserRoutes);
-app.use('/api/shops', ShopRoutes);
+app.use('/api/admin/shops', ShopRoutes);
 app.use('/api/products', productRoutes);  // Add product routes
 //app.use('./api/promotion', promotionRoutes);
 
