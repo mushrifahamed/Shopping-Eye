@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const PromotionForm = () => {
   const [promotion, setPromotion] = useState({
@@ -7,6 +8,7 @@ const PromotionForm = () => {
     start_date: '',
     end_date: '',
     image_url: '',
+    percentage: '', // New percentage field
     created_at: new Date().toISOString(),
     updated_at: new Date().toISOString(),
   });
@@ -23,6 +25,9 @@ const PromotionForm = () => {
     if (!promotion.end_date) newErrors.end_date = 'End date is required';
     if (new Date(promotion.start_date) > new Date(promotion.end_date)) {
       newErrors.dateRange = 'End date must be after the start date';
+    }
+    if (!promotion.percentage || promotion.percentage < 0 || promotion.percentage > 100) {
+      newErrors.percentage = 'Percentage must be between 0 and 100';
     }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -58,72 +63,92 @@ const PromotionForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     if (validate()) {
-      console.log('Promotion data:', promotion);
-      if (image) {
-        const formData = new FormData();
-        formData.append('file', image);
-        const response = await fetch('https://your-server.com/upload', {
-          method: 'POST',
-          body: formData,
+      const formData = new FormData();
+      
+      // Append promotion data without the image
+      formData.append('title', promotion.title);
+      formData.append('description', promotion.description);
+      formData.append('start_date', promotion.start_date);
+      formData.append('end_date', promotion.end_date);
+      formData.append('percentage', promotion.percentage);
+      formData.append('created_at', promotion.created_at);
+      formData.append('updated_at', promotion.updated_at);
+      
+      try {
+        const response = await axios.post('https://localhost:8089/api/promotions/createPromotion', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          },
         });
-        if (response.ok) {
-          console.log('Image uploaded successfully');
+  
+        if (response.status === 200) {
+          console.log('Promotion created successfully');
+          // Optionally reset form state or handle success
         } else {
-          console.error('Image upload failed');
+          console.error('Failed to create promotion');
+          // Optionally handle error
         }
+      } catch (error) {
+        console.error('An error occurred:', error);
+        // Optionally handle network error
       }
     }
   };
 
   return (
-    <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Add Promotion</h2>
-      <form onSubmit={handleSubmit} className="space-y-4">
+    <div className="max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-md">
+      <h2 className="text-3xl font-semibold mb-6 text-gray-900">Create new promotion</h2>
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div>
-          <label className="block text-sm font-medium text-gray-700">Title</label>
+          <label className="block text-lg font-medium text-gray-700">Promotion title</label>
           <input
             type="text"
             name="title"
             value={promotion.title}
             onChange={handleChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+            className="mt-2 w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+            placeholder="Title"
           />
           {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Description</label>
+          <label className="block text-lg font-medium text-gray-700">Description</label>
           <textarea
             name="description"
             value={promotion.description}
             onChange={handleChange}
-            className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+            className="mt-2 w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+            placeholder="Description"
           />
           {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-6">
           <div>
-            <label className="block text-sm font-medium text-gray-700">Start Date</label>
+            <label className="block text-lg font-medium text-gray-700">Start date</label>
             <input
               type="date"
               name="start_date"
               value={promotion.start_date}
               onChange={handleChange}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-2 w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="MM/DD/YYYY"
             />
             {errors.start_date && <p className="text-red-500 text-sm mt-1">{errors.start_date}</p>}
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700">End Date</label>
+            <label className="block text-lg font-medium text-gray-700">End date</label>
             <input
               type="date"
               name="end_date"
               value={promotion.end_date}
               onChange={handleChange}
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+              className="mt-2 w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+              placeholder="MM/DD/YYYY"
             />
             {errors.end_date && <p className="text-red-500 text-sm mt-1">{errors.end_date}</p>}
             {errors.dateRange && <p className="text-red-500 text-sm mt-1">{errors.dateRange}</p>}
@@ -131,11 +156,24 @@ const PromotionForm = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-medium text-gray-700">Image</label>
+          <label className="block text-lg font-medium text-gray-700">Percentage</label>
+          <input
+            type="number"
+            name="percentage"
+            value={promotion.percentage}
+            onChange={handleChange}
+            className="mt-2 w-full p-3 border border-gray-300 rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
+            placeholder="Enter percentage"
+          />
+          {errors.percentage && <p className="text-red-500 text-sm mt-1">{errors.percentage}</p>}
+        </div>
+
+        <div>
+          <label className="block text-lg font-medium text-gray-700">Image URL</label>
           <button
             type="button"
             onClick={handleAddImageClick}
-            className="mt-1 inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="mt-2 inline-flex items-center px-4 py-2 border border-transparent text-sm leading-4 font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Add Image
           </button>
@@ -151,16 +189,16 @@ const PromotionForm = () => {
               <img
                 src={promotion.image_url}
                 alt="Promotion Preview"
-                className="w-32 h-32 object-cover rounded-md"
+                className="w-40 h-40 object-cover rounded-lg"
               />
             </div>
           )}
         </div>
 
-        <div>
+        <div className="flex justify-center items-center">
           <button
             type="submit"
-            className="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            className="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
           >
             Submit
           </button>
