@@ -57,6 +57,12 @@ const ProductDetail = ({ route }) => {
               <Text style={styles.shopName}>{Shop.name}</Text>
               <Text style={styles.shopDescription}>{Shop.description}</Text>
               <Text style={styles.shopLocation}>Location: {Shop.location}</Text>
+              <Text style={styles.shopLocation}>
+                Contact Number: {Shop.contactInfo.phone}
+              </Text>
+              <Text style={styles.shopLocation}>
+                Email: {Shop.contactInfo.email}
+              </Text>
             </>
           );
         })}
