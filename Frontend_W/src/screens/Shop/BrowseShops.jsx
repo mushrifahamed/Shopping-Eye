@@ -39,26 +39,19 @@ const BrowseShops = () => {
       <Sidebar />
 
       {/* Main content */}
-      <div className="flex-1 p-6">
-        <div className="mb-6 flex justify-between items-center">
+      <div className="flex-1 p-6 ml-10"> {/* Adjusted margin-left for the sidebar */}
+        <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Browse Shops</h1>
-
-          {/* Add Shop Button */}
-          <button
-            onClick={() => navigate('/addshop')}
-            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
-          >
-            Add Shop
-          </button>
+          
+          {/* Search input */}
+          <input
+            type="text"
+            placeholder="Search for shops..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-60 px-4 py-2 border rounded-lg shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          />
         </div>
-
-        <input
-          type="text"
-          placeholder="Search for shops..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
-        />
 
         {loading ? (
           <p>Loading shops...</p>
@@ -66,20 +59,20 @@ const BrowseShops = () => {
           <p className="text-red-500">{error}</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border border-gray-300">
-              <thead>
+            <table className="min-w-full bg-white  border-gray-300 rounded-lg shadow-lg overflow-hidden">
+              <thead className="bg-gray-200">
                 <tr>
-                  <th className="py-2 px-4 border-b text-left">Image</th>
-                  <th className="py-2 px-4 border-b text-left">Name</th>
-                  <th className="py-2 px-4 border-b text-left">Description</th>
-                  <th className="py-2 px-4 border-b text-left">Actions</th>
+                  <th className="py-2 px-4 border-b text-left text-gray-700">Image</th>
+                  <th className="py-2 px-4 border-b text-left text-gray-700">Name</th>
+                  <th className="py-2 px-4 border-b text-left text-gray-700">Description</th>
+                  <th className="py-2 px-4 border-b text-left text-gray-700">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 {filteredShops.map(shop => (
                   <tr key={shop._id} className="border-b">
                     <td className="py-2 px-4">
-                      <img src={shop.image} alt={shop.name} className="w-16 h-16 object-cover" />
+                      <img src={shop.image} alt={shop.name} className="w-16 h-16 object-cover rounded-full" />
                     </td>
                     <td className="py-2 px-4">{shop.name}</td>
                     <td className="py-2 px-4">{shop.description}</td>

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import { ShoppingBagIcon } from '@heroicons/react/24/outline'
 
 const Sidebar = () => {
   const [openMenu, setOpenMenu] = useState(null); // State to track the open menu
@@ -27,12 +28,15 @@ const Sidebar = () => {
       <nav>
         <ul>
           <li>
-            <button
+          <button
               onClick={() => handleMenuClick('shops')}
               className={`block py-2 px-4 rounded w-full text-left ${isActive('/shops') ? 'bg-secondary-600' : 'hover:bg-secondary-500'}`}
             >
-              Shops
-            </button>
+              <div className="flex items-center">
+                <ShoppingBagIcon className="w-6 h-6 mr-3" /> {/* Adjust size and margin */}
+                <span>Shops</span>
+              </div>
+              </button>
             {openMenu === 'shops' && (
               <ul className="pl-6 mt-2">
                 <li>
@@ -40,6 +44,7 @@ const Sidebar = () => {
                     to="/shops"
                     className={`block py-2 px-4 rounded ${isActive('/shops') ? 'bg-secondary-600' : 'hover:bg-secondary-500'}`}
                   >
+                    
                     View Shops
                   </Link>
                 </li>

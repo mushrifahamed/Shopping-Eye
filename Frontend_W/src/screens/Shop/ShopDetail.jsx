@@ -69,62 +69,83 @@ const ShopDetail = () => {
       <Sidebar />
 
       {/* Main content */}
-      <div className="flex-1 p-6">
+      <div className="flex-1 p-6 ml-10"> 
         {loading ? (
-          <p>Loading shop details...</p>
+          <p className="text-gray-600">Loading shop details...</p>
         ) : error ? (
-          <p className="text-red-500">{error}</p>
+          <p className="text-red-600">{error}</p>
         ) : shop ? (
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <img src={shop.image} alt={shop.name} className="w-full h-64 object-cover mb-6 rounded" />
-            <h1 className="text-3xl font-bold mb-4">{shop.name}</h1>
-            <p className="text-gray-700 mb-4">{shop.description}</p>
-            <h2 className="text-xl font-semibold mb-2">Location:</h2>
-            <p className="text-gray-700 mb-4">{shop.location}</p>
-            <h2 className="text-xl font-semibold mb-2">Contact Information:</h2>
-            <p className="text-gray-700">Phone: {shop.contactInfo.phone}</p>
-            <p className="text-gray-700">Email: {shop.contactInfo.email}</p>
+          <div className="bg-white p-8 rounded-lg shadow-lg">
+            <div className="flex items-start mb-6">
+              {/* Image */}
+              <img src={shop.image} alt={shop.name} className="w-64 h-64 object-cover rounded-lg mr-6" />
+              {/* Details */}
+              <div className="flex-1">
+                <h1 className="text-4xl font-bold mb-4 text-gray-800">{shop.name}</h1>
+                <p className="text-gray-700 mb-4">{shop.description}</p>
+                <h2 className="text-2xl font-semibold mb-2 text-gray-800">Location:</h2>
+                <p className="text-gray-700 mb-4">{shop.location}</p>
+                <h2 className="text-2xl font-semibold mb-2 text-gray-800">Contact Information:</h2>
+                <p className="text-gray-700">Phone: {shop.contactInfo.phone}</p>
+                <p className="text-gray-700">Email: {shop.contactInfo.email}</p>
+              </div>
+            </div>
 
-            {/* Delete Button */}
-            <button
-              onClick={handleDelete}
-              className="mt-6 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
-            >
-              Delete Shop
-            </button>
-
-            {/* Add Product Button */}
-            <button
-              onClick={handleAddProduct}
-              className="mt-6 ml-4 px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
-            >
-              Add Product
-            </button>
+            {/* Buttons */}
+            <div className="mt-6 flex space-x-4">
+              <button
+                onClick={handleDelete}
+                className="px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+              >
+                Delete Shop
+              </button>
+              <button
+                onClick={handleAddProduct}
+                className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+              >
+                Add Product
+              </button>
+            </div>
 
             {/* Products Section */}
-            <h2 className="text-2xl font-semibold mt-8 mb-4">Products</h2>
+            <h2 className="text-3xl font-semibold mt-8 mb-4 text-gray-800">Products</h2>
             {products.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {products.map((product) => (
-                  <div key={product._id} className="bg-gray-200 p-4 rounded-lg shadow-md">
-                    <img
-                      src={product.imageUrl}
-                      alt={product.name}
-                      className="w-full h-40 object-cover mb-4 rounded"
-                    />
-                    <h3 className="text-xl font-bold mb-2">{product.name}</h3>
-                    <p className="text-gray-700">{product.description}</p>
-                    <p className="text-gray-900 font-semibold mt-2">${product.price}</p>
-                    <p className="text-gray-600 mt-1">Category: {product.category}</p>
-                  </div>
-                ))}
+              <div className="overflow-x-auto">
+                <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+                  <thead className="bg-gray-200 text-gray-600">
+                    <tr>
+                      <th className="py-2 px-4 border-b">Image</th>
+                      <th className="py-2 px-4 border-b">Name</th>
+                      <th className="py-2 px-4 border-b">Description</th>
+                      <th className="py-2 px-4 border-b">Price</th>
+                      <th className="py-2 px-4 border-b">Category</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {products.map((product) => (
+                      <tr key={product._id} className="border-b">
+                        <td className="py-2 px-4 w-32">
+                          <img
+                            src={product.imageUrl}
+                            alt={product.name}
+                            className="w-full h-32 object-cover rounded"
+                          />
+                        </td>
+                        <td className="py-2 px-4 text-gray-800">{product.name}</td>
+                        <td className="py-2 px-4 text-gray-600">{product.description}</td>
+                        <td className="py-2 px-4 text-gray-900 font-semibold">${product.price}</td>
+                        <td className="py-2 px-4 text-gray-600">{product.category}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             ) : (
-              <p>No products found for this shop.</p>
+              <p className="text-gray-600">No products found for this shop.</p>
             )}
           </div>
         ) : (
-          <p>No shop found.</p>
+          <p className="text-gray-600">No shop found.</p>
         )}
       </div>
     </div>
