@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
+import Sidebar from '../../components/SideBar';
 
 const PromotionTablePage = () => {
   const [promotions, setPromotions] = useState([]);
@@ -21,9 +22,32 @@ const PromotionTablePage = () => {
     fetchPromotions();
   }, []);
 
+  const handleDelete = async (_id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this promotion?");
+    
+    if (confirmDelete) {
+      try {
+        // Call the backend to delete the promotion by _id
+        await axios.delete(`http://localhost:8089/api/promotion/deletePromotion/${_id}`);
+  
+        // Update the local state to remove the deleted promotion
+        setPromotions(promotions.filter(promo => promo._id !== _id));
+  
+        console.log('Promotion deleted successfully');
+      } catch (error) {
+        console.error('Error deleting promotion:', error);
+      }
+    }
+  };
+  
+
   if (loading) return <p className="text-center text-gray-500">Loading...</p>;
 
   return (
+    <div className="flex min-h-screen bg-gray-100">
+      {/* Sidebar */}
+      <Sidebar />
+
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-2xl font-semibold text-gray-800">Promotion List</h2>
@@ -48,6 +72,7 @@ const PromotionTablePage = () => {
               <th className="px-6 py-3 text-left border-b">End Date</th>
               <th className="px-6 py-3 text-left border-b">Percentage</th>
               <th className="px-6 py-3 text-left border-b">Image</th>
+              <th className="px-6 py-3 text-left border-b">Actions</th>
             </tr>
           </thead>
           <tbody className="text-gray-700 text-sm">
@@ -78,11 +103,19 @@ const PromotionTablePage = () => {
                       'No image'
                     )}
                   </td>
+                  <td className="px-6 py-4 border-b">
+                    <button
+                      onClick={() => handleDelete(promo._id)}
+                      className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none"
+                    >
+                      Delete
+                    </button>
+                  </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="8" className="px-6 py-4 text-center text-gray-500">
+                <td colSpan="9" className="px-6 py-4 text-center text-gray-500">
                   No promotions available
                 </td>
               </tr>
@@ -90,7 +123,7 @@ const PromotionTablePage = () => {
           </tbody>
         </table>
       </div>
-    </div>
+    </div></div>
   );
 };
 

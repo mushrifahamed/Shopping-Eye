@@ -34,7 +34,7 @@ const promotionSchema = mongoose.Schema(
     },
     image_url: {
       type: String,
-      required: false,
+      required: true,
       trim: true,
     },
     created_at: {
