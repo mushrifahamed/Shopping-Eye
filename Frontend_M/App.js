@@ -1,10 +1,24 @@
+// src/App.js
 import React from 'react';
-import { Text, View } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import OnboardingScreen from './screens/OnboardingScreen';
+import RegisterScreen from './screens/RegisterScreen';
+import DisabledHomeScreen from './screens/DisabledHomeScreen';
 
-export default function App() {
+const Stack = createStackNavigator();
+
+const App = () => {
   return (
-    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Hello, welcome to Shopping Eye!</Text>
-    </View>
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName="Onboarding">
+        <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen name="DisabledHome" component={DisabledHomeScreen} />
+        {/* Add normal home screen here */}
+      </Stack.Navigator>
+    </NavigationContainer>
   );
-}
+};
+
+export default App;
