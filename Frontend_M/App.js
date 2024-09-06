@@ -5,6 +5,7 @@ import ProductList from './screens/ProductList';
 import Wishlist from './screens/Wishlist';
 import ProductDetail from './screens/ProductDetail';
 
+
 const Stack = createStackNavigator();
 
 export default function App() {
