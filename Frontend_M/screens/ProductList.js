@@ -1,15 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, FlatList, Image, TouchableOpacity, Button } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import {
+  StyleSheet,
+  View,
+  Text,
+  FlatList,
+  Image,
+  TouchableOpacity,
+  Button,
+} from "react-native";
+import Icon from "react-native-vector-icons/Ionicons";
+import axios from "axios";
 
 const ProductList = ({ navigation }) => {
   const [products, setProducts] = useState([]);
   const [wishlist, setWishlist] = useState([]);
-  const staticUserId = 'staticUser123'; // Static user ID
+  const staticUserId = "staticUser123"; // Static user ID
 
   useEffect(() => {
-    axios.get('http://192.168.7.55:8089/api/products/products')
+    axios
+      .get("http://192.168.7.55:8089/api/products/products")
       .then((res) => {
         setProducts(res.data);
       })
@@ -17,7 +26,8 @@ const ProductList = ({ navigation }) => {
         console.error(err);
       });
 
-    axios.get(`http://192.168.7.55:8089/api/wishlist/${staticUserId}`)
+    axios
+      .get(`http://192.168.7.55:8089/api/wishlist/${staticUserId}`)
       .then((res) => {
         setWishlist(res.data.wishlist.products);
       })
@@ -27,19 +37,27 @@ const ProductList = ({ navigation }) => {
   }, []);
 
   const toggleWishlist = (product) => {
-    const isInWishlist = wishlist.find(item => item._id === product._id);
+    const isInWishlist = wishlist.find((item) => item._id === product._id);
 
     if (isInWishlist) {
-      axios.post('http://192.168.7.55:8089/api/wishlist/remove', { productId: product._id, userId: staticUserId })
+      axios
+        .post("http://192.168.7.55:8089/api/wishlist/remove", {
+          productId: product._id,
+          userId: staticUserId,
+        })
         .then(() => {
-          setWishlist(wishlist.filter(item => item._id !== product._id));
+          setWishlist(wishlist.filter((item) => item._id !== product._id));
         })
         .catch((err) => {
           console.error(err);
         });
     } else {
-      console.log(product._id)
-      axios.post('http://192.168.7.55:8089/api/wishlist/add', { productId: product._id, userId: staticUserId })
+      console.log(product._id);
+      axios
+        .post("http://192.168.7.55:8089/api/wishlist/add", {
+          productId: product._id,
+          userId: staticUserId,
+        })
         .then(() => {
           setWishlist([...wishlist, product]);
         })
@@ -50,9 +68,17 @@ const ProductList = ({ navigation }) => {
   };
 
   const renderProduct = ({ item }) => {
-    const isInWishlist = wishlist.find(product => product._id === item._id);
+    const isInWishlist = wishlist.find((product) => product._id === item._id);
     return (
-      <TouchableOpacity onPress={() => navigation.navigate('ProductDetail', { product: item, toggleWishlist, isInWishlist })}>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate("ProductDetail", {
+            product: item,
+            toggleWishlist,
+            isInWishlist,
+          })
+        }
+      >
         <View style={styles.productContainer}>
           <Image source={{ uri: item.imageUrl }} style={styles.productImage} />
           <View style={styles.productDetails}>
@@ -61,9 +87,9 @@ const ProductList = ({ navigation }) => {
           </View>
           <TouchableOpacity onPress={() => toggleWishlist(item)}>
             <Icon
-              name={isInWishlist ? 'heart' : 'heart-outline'}
+              name={isInWishlist ? "heart" : "heart-outline"}
               size={30}
-              color={isInWishlist ? 'red' : 'gray'}
+              color={isInWishlist ? "red" : "gray"}
             />
           </TouchableOpacity>
         </View>
@@ -78,7 +104,12 @@ const ProductList = ({ navigation }) => {
         keyExtractor={(item) => item._id}
         renderItem={renderProduct}
       />
-      <Button title="Go to Wishlist" onPress={() => navigation.navigate('Wishlist', { wishlist, toggleWishlist })} />
+      <Button
+        title="Go to Wishlist"
+        onPress={() =>
+          navigation.navigate("Wishlist", { wishlist, toggleWishlist })
+        }
+      />
     </View>
   );
 };
@@ -89,16 +120,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: "#f5f5f5",
   },
   productContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
     marginBottom: 8,
     borderRadius: 8,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
@@ -110,15 +141,15 @@ const styles = StyleSheet.create({
   },
   productDetails: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: "center",
     marginLeft: 10,
   },
   productName: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   productPrice: {
     fontSize: 16,
-    color: 'green',
+    color: "green",
   },
 });

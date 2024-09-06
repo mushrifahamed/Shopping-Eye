@@ -1,6 +1,7 @@
 import Wishlist from "../models/wishlistModel.js";
 import Product from "../models/productModel.js"; // Import the Product model
 import mongoose from "mongoose";
+import Shop from "../models/shopModel.js";
 
 // Static user ID for testing
 const staticUserId = "staticUser123";
@@ -101,5 +102,46 @@ export const getWishlistByUser = async (req, res) => {
   } catch (error) {
     console.error("Error retrieving wishlist:", error); // Log the error
     res.status(500).json({ error: "Error retrieving wishlist" });
+  }
+};
+
+// Method to find the shop based on a product's attributes
+export const getShopByProduct = async (req, res) => {
+  const { productName } = req.params;
+
+  try {
+    // Fetch the product by its name (or any other identifier you choose)
+    const product = await Product.findOne({ name: productName });
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    console.log(product.name);
+    // Fetch all shops
+    const shops = await Shop.find().populate("products");
+
+    // Compare each shop with the product (based on the name, category, or other attributes)
+    const matchingShops = shops.filter((shop) => {
+      return shop.products.some((p) => {
+        // Compare the product IDs
+        return p._id.toString() === product._id.toString(); // Adjust this based on your matching logic
+      });
+    });
+
+    // Log or use the matchingShops array as needed
+    console.log(matchingShops);
+
+    // Check if any shop matches the criteria
+    if (matchingShops.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No shop found for this product" });
+    }
+
+    res.status(200).json(matchingShops);
+    // Return the first matching shop (or all matching shops, depending on your use case)
+  } catch (error) {
+    console.error("Error fetching shop:", error);
+    res.status(500).json({ message: "Error fetching shop" });
   }
 };
