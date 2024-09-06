@@ -6,21 +6,46 @@ import axios from 'axios';
 const ProductList = ({ navigation }) => {
   const [products, setProducts] = useState([]);
   const [wishlist, setWishlist] = useState([]);
+  const staticUserId = 'staticUser123'; // Static user ID
 
   useEffect(() => {
-    axios.get('http://192.168.7.55:8089/api/products/products').then((res)=>{
-      console.log(res.data)
-      setProducts(res.data)
-    }).catch((err) => {
-      console.log(err)
-    })
+    axios.get('http://192.168.7.55:8089/api/products/products')
+      .then((res) => {
+        setProducts(res.data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+
+    axios.get(`http://192.168.7.55:8089/api/wishlist/${staticUserId}`)
+      .then((res) => {
+        setWishlist(res.data.wishlist.products);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }, []);
 
   const toggleWishlist = (product) => {
-    if (wishlist.find(item => item.id === product._id)) {
-      setWishlist(wishlist.filter(item => item.id !== product._id));
+    const isInWishlist = wishlist.find(item => item._id === product._id);
+
+    if (isInWishlist) {
+      axios.post('http://192.168.7.55:8089/api/wishlist/remove', { productId: product._id, userId: staticUserId })
+        .then(() => {
+          setWishlist(wishlist.filter(item => item._id !== product._id));
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     } else {
-      setWishlist([...wishlist, product]);
+      console.log(product._id)
+      axios.post('http://192.168.7.55:8089/api/wishlist/add', { productId: product._id, userId: staticUserId })
+        .then(() => {
+          setWishlist([...wishlist, product]);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
     }
   };
 
@@ -63,25 +88,29 @@ export default ProductList;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
+    padding: 16,
+    backgroundColor: '#f5f5f5',
   },
   productContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-    padding: 10,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 10,
+    justifyContent: 'space-between',
+    padding: 16,
+    backgroundColor: '#fff',
+    marginBottom: 8,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   productImage: {
     width: 100,
     height: 100,
-    borderRadius: 10,
+    borderRadius: 8,
   },
   productDetails: {
     flex: 1,
+    justifyContent: 'center',
     marginLeft: 10,
   },
   productName: {
@@ -90,6 +119,6 @@ const styles = StyleSheet.create({
   },
   productPrice: {
     fontSize: 16,
-    color: 'gray',
+    color: 'green',
   },
 });

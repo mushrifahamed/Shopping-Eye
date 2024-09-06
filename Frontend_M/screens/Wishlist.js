@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Text, FlatList, TouchableOpacity, Alert } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
+import axios from 'axios';
 
 const Wishlist = ({ route, navigation }) => {
   const { wishlist, toggleWishlist } = route.params;
   const [localWishlist, setLocalWishlist] = useState(wishlist);
   const [message, setMessage] = useState('');
+  const staticUserId = 'staticUser123'; // Static user ID
 
   const handleDelete = (product) => {
     Alert.alert(
@@ -19,10 +21,16 @@ const Wishlist = ({ route, navigation }) => {
         {
           text: 'Yes',
           onPress: () => {
-            toggleWishlist(product); // Update the wishlist state in App
-            setLocalWishlist((prevWishlist) => prevWishlist.filter(item => item.id !== product.id)); // Update local state
-            setMessage('Successfully deleted');
-            setTimeout(() => setMessage(''), 2000); // Clear message after 2 seconds
+            axios.post('http://192.168.7.55:8089/api/wishlist/remove', { productId: product._id, userId: staticUserId })
+              .then(() => {
+                toggleWishlist(product); // Update the wishlist state in App
+                setLocalWishlist((prevWishlist) => prevWishlist.filter(item => item._id !== product._id)); // Update local state
+                setMessage('Successfully deleted');
+                setTimeout(() => setMessage(''), 2000); // Clear message after 2 seconds
+              })
+              .catch((err) => {
+                console.error(err);
+              });
           },
         },
       ],
@@ -47,7 +55,7 @@ const Wishlist = ({ route, navigation }) => {
       {localWishlist.length > 0 ? (
         <FlatList
           data={localWishlist}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item._id}
           renderItem={renderWishlistItem}
         />
       ) : (
@@ -62,35 +70,37 @@ export default Wishlist;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
+    padding: 16,
+    backgroundColor: '#f5f5f5',
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
+    marginBottom: 16,
+  },
+  message: {
+    color: 'green',
+    fontSize: 16,
+    marginBottom: 16,
   },
   wishlistItemContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    padding: 16,
+    backgroundColor: '#fff',
+    marginBottom: 8,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   wishlistItemText: {
-    fontSize: 18,
+    fontSize: 16,
   },
   emptyText: {
-    fontSize: 18,
-    color: 'gray',
+    fontSize: 16,
     textAlign: 'center',
-    marginTop: 50,
-  },
-  message: {
-    fontSize: 18,
-    color: 'green',
-    textAlign: 'center',
-    marginBottom: 20,
+    marginTop: 20,
   },
 });
-
