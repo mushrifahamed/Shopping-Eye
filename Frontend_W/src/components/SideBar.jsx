@@ -45,10 +45,7 @@ const Sidebar = () => {
             </Link>
           </li>
           <li>
-            <Link
-              to="#promotions"
-              className={`block py-2 px-4 rounded ${isActive('/promotions') ? 'bg-blue-700' : 'hover:bg-blue-600'}`}
-            >
+            <Link to="/PromotionList" className="block py-2 px-4 hover:bg-blue-600 rounded">
               Promotions
             </Link>
           </li>

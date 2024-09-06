@@ -4,11 +4,11 @@ import Promotion from '../models/promotionModel.js';
 // Create a new promotion
 export const createPromotion = async (req, res) => {
   try {
-    const { title, description, start_date, end_date, percentage } = req.body;
-    //let imagePath = "uploads/images/No-Image-Placeholder.png";
-    //if (req.file && req.file.path) {
-     // imagePath = req.file.path;
-   // }
+    const { title, description, start_date, end_date, percentage ,image_url } = req.body;
+    let imagePath = "uploads/images/No-Image-Placeholder.png";
+    if (image_url !== '') {
+      imagePath = image_url;
+    }
    const latestPromotion = await Promotion.find().sort({ _id: -1 }).limit(1);
     let ID;
 
@@ -27,7 +27,7 @@ export const createPromotion = async (req, res) => {
       description,
       start_date,
       end_date,
-      //image_url: imagePath,
+      image_url: imagePath,
       percentage,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
@@ -117,8 +117,8 @@ export const updatePromotion = async (req, res) => {
 // Delete a promotion
 export const deletePromotion = async (req, res) => {
   try {
-    const { id } = req.params;
-    const promotion = await Promotion.findById(id);
+    const { _id } = req.params;
+    const promotion = await Promotion.findById(_id);
 
     if (!promotion) {
       return res.status(404).send({ message: "Promotion not found" });
@@ -131,7 +131,7 @@ export const deletePromotion = async (req, res) => {
       });
     }
 
-    await Promotion.findByIdAndDelete(id);
+    await Promotion.findByIdAndDelete(_id);
     res.status(200).send({ message: "Promotion deleted successfully" });
   } catch (error) {
     console.error(error);
