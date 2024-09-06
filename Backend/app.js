@@ -3,10 +3,12 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors'; // Import the cors package
+import AdminProdRoutes from './routes/AdminProdRoutes.js'
 import AdminUserRoutes from './routes/AdminUserRoutes.js';
 import ShopRoutes from './routes/shopRoutes.js';
 import productRoutes from './routes/productRoute.js';  // Add product routes
 import promotionRoutes from './routes/promotionRoutes.js'
+import WishlistRoutes from './routes/wishListRoutes.js'
 
 const app = express();
 
