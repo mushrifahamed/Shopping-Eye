@@ -65,22 +65,36 @@ const BrowseShops = () => {
         ) : error ? (
           <p className="text-red-500">{error}</p>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-            {filteredShops.map(shop => (
-              <div key={shop._id} className="bg-white rounded-lg shadow-md overflow-hidden">
-                <img src={shop.image} alt={shop.name} className="w-full h-32 object-cover" />
-                <div className="p-4">
-                  <h2 className="text-xl font-semibold mb-2">{shop.name}</h2>
-                  <p className="text-gray-600">{shop.description}</p>
-                  <a
-                    href={`/shop/${shop._id}`}
-                    className="mt-4 inline-block px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                  >
-                    View Shop
-                  </a>
-                </div>
-              </div>
-            ))}
+          <div className="overflow-x-auto">
+            <table className="min-w-full bg-white border border-gray-300">
+              <thead>
+                <tr>
+                  <th className="py-2 px-4 border-b text-left">Image</th>
+                  <th className="py-2 px-4 border-b text-left">Name</th>
+                  <th className="py-2 px-4 border-b text-left">Description</th>
+                  <th className="py-2 px-4 border-b text-left">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredShops.map(shop => (
+                  <tr key={shop._id} className="border-b">
+                    <td className="py-2 px-4">
+                      <img src={shop.image} alt={shop.name} className="w-16 h-16 object-cover" />
+                    </td>
+                    <td className="py-2 px-4">{shop.name}</td>
+                    <td className="py-2 px-4">{shop.description}</td>
+                    <td className="py-2 px-4">
+                      <a
+                        href={`/shop/${shop._id}`}
+                        className="inline-block px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                      >
+                        View Shop
+                      </a>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>

@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 
 const Sidebar = () => {
+  const [openMenu, setOpenMenu] = useState(null); // State to track the open menu
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -12,49 +13,107 @@ const Sidebar = () => {
     navigate('/login'); // Redirect to login page
   };
 
+  // Toggle menu item
+  const handleMenuClick = (menu) => {
+    setOpenMenu(openMenu === menu ? null : menu); // Toggle the menu
+  };
+
   // Helper function to check if a menu item is active
   const isActive = (path) => location.pathname === path;
 
   return (
-    <aside className="w-64 bg-blue-500 text-white p-4">
+    <aside className="w-64 bg-primary text-white p-4">
       <h2 className="text-2xl font-bold mb-6">Dashboard</h2>
       <nav>
         <ul>
           <li>
-            <Link
-              to="/shops"
-              className={`block py-2 px-4 rounded ${isActive('/shops') ? 'bg-blue-700' : 'hover:bg-blue-600'}`}
+            <button
+              onClick={() => handleMenuClick('shops')}
+              className={`block py-2 px-4 rounded w-full text-left ${isActive('/shops') ? 'bg-secondary-600' : 'hover:bg-secondary-500'}`}
             >
               Shops
-            </Link>
+            </button>
+            {openMenu === 'shops' && (
+              <ul className="pl-6 mt-2">
+                <li>
+                  <Link
+                    to="/shops"
+                    className={`block py-2 px-4 rounded ${isActive('/shops') ? 'bg-secondary-600' : 'hover:bg-secondary-500'}`}
+                  >
+                    View Shops
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/addshop"
+                    className={`block py-2 px-4 rounded ${isActive('/addshop') ? 'bg-secondary-600' : 'hover:bg-secondary-500'}`}
+                  >
+                    Add Shop
+                  </Link>
+                </li>
+              </ul>
+            )}
           </li>
           <li>
-            <Link
-              to="#products"
-              className={`block py-2 px-4 rounded ${isActive('/products') ? 'bg-blue-700' : 'hover:bg-blue-600'}`}
-            >
-              Products
-            </Link>
-          </li>
-          <li>
-            <Link
-              to="#loyalty"
-              className={`block py-2 px-4 rounded ${isActive('/loyalty') ? 'bg-blue-700' : 'hover:bg-blue-600'}`}
+            <button
+              onClick={() => handleMenuClick('loyalty')}
+              className={`block py-2 px-4 rounded w-full text-left ${isActive('/loyalty') ? 'bg-secondary-600' : 'hover:bg-secondary-500'}`}
             >
               Loyalty
-            </Link>
+            </button>
+            {openMenu === 'loyalty' && (
+              <ul className="pl-6 mt-2">
+                <li>
+                  <Link
+                    to="/loyalty"
+                    className={`block py-2 px-4 rounded ${isActive('/loyalty') ? 'bg-secondary-600' : 'hover:bg-secondary-500'}`}
+                  >
+                    View Loyalty
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/addloyalty"
+                    className={`block py-2 px-4 rounded ${isActive('/addloyalty') ? 'bg-secondary-600' : 'hover:bg-secondary-500'}`}
+                  >
+                    Add Loyalty
+                  </Link>
+                </li>
+              </ul>
+            )}
           </li>
           <li>
-            <Link 
-            to="/PromotionList"
-              className={`block py-2 px-4 rounded ${isActive('/PromotionList') ? 'bg-blue-700' : 'hover:bg-blue-600'}`}>
+            <button
+              onClick={() => handleMenuClick('promotions')}
+              className={`block py-2 px-4 rounded w-full text-left ${isActive('/PromotionList') ? 'bg-secondary-600' : 'hover:bg-secondary-500'}`}
+            >
               Promotions
-            </Link>
+            </button>
+            {openMenu === 'promotions' && (
+              <ul className="pl-6 mt-2">
+                <li>
+                  <Link
+                    to="/PromotionList"
+                    className={`block py-2 px-4 rounded ${isActive('/PromotionList') ? 'bg-secondary-600' : 'hover:bg-secondary-500'}`}
+                  >
+                    View Promotions
+                  </Link>
+                </li>
+                <li>
+                  <Link
+                    to="/addpromotion"
+                    className={`block py-2 px-4 rounded ${isActive('/addpromotion') ? 'bg-secondary-600' : 'hover:bg-secondary-500'}`}
+                  >
+                    Add Promotion
+                  </Link>
+                </li>
+              </ul>
+            )}
           </li>
           <li>
             <button
               onClick={handleLogout}
-              className="block w-full mt-4 py-2 px-4 bg-red-500 hover:bg-red-600 rounded text-left"
+              className="block w-full mt-4 py-2 px-4 bg-[#FF6F61] hover:bg-red-600 rounded text-left"
             >
               Logout
             </button>
