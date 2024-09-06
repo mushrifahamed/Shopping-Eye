@@ -88,9 +88,10 @@ export const removeProductFromWishlist = async (req, res) => {
 // Get wishlist for the static user
 export const getWishlistByUser = async (req, res) => {
   try {
-    const wishlist = await Wishlist.findOne({ user: staticUserId }).populate(
-      "products"
-    );
+    const wishlist = await Wishlist.findOne({ user: staticUserId }).populate({
+      path: "products",
+      select: "name description price category imageUrl",
+    });
 
     if (!wishlist) {
       return res.status(404).json({ message: "Wishlist not found" });
@@ -98,6 +99,7 @@ export const getWishlistByUser = async (req, res) => {
 
     res.status(200).json({ wishlist });
   } catch (error) {
+    console.error("Error retrieving wishlist:", error); // Log the error
     res.status(500).json({ error: "Error retrieving wishlist" });
   }
 };
