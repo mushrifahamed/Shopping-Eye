@@ -1,5 +1,5 @@
 import express from 'express';
-import { addShop, getShops, getShopById } from '../controllers/shopController.js';
+import { addShop, getShops, getShopById, deleteShop } from '../controllers/shopController.js';
 
 const router = express.Router();
 
@@ -12,6 +12,10 @@ router.post('/addshop', addShop);
 router.get('/getshops', getShops);
 
 // Get a specific shop by ID
-router.get('/shops/:id', getShopById);
+router.get('/getshops/:id', getShopById);
+
+// DELETE /api/admin/shops/:id - Delete a shop by ID
+router.delete('/:id', deleteShop);
+
 
 export default router;

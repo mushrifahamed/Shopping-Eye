@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 import Sidebar from '../../components/SideBar'; // Import the Sidebar component
 
 const BrowseShops = () => {
@@ -6,11 +7,12 @@ const BrowseShops = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate(); // Initialize the navigate hook
 
   useEffect(() => {
     const fetchShops = async () => {
       try {
-        const response = await fetch('http://localhost:8089/api/shops/getshops');
+        const response = await fetch('http://localhost:8089/api/admin/shops/getshops');
         if (!response.ok) {
           throw new Error('Failed to fetch shops');
         }
@@ -38,16 +40,25 @@ const BrowseShops = () => {
 
       {/* Main content */}
       <div className="flex-1 p-6">
-        <div className="mb-6">
-          <h1 className="text-3xl font-bold mb-4">Browse Shops</h1>
-          <input
-            type="text"
-            placeholder="Search for shops..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-          />
+        <div className="mb-6 flex justify-between items-center">
+          <h1 className="text-3xl font-bold">Browse Shops</h1>
+
+          {/* Add Shop Button */}
+          <button
+            onClick={() => navigate('/addshop')}
+            className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+          >
+            Add Shop
+          </button>
         </div>
+
+        <input
+          type="text"
+          placeholder="Search for shops..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="w-full px-4 py-2 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 mb-4"
+        />
 
         {loading ? (
           <p>Loading shops...</p>

@@ -1,13 +1,12 @@
 // src/app.js
-import express from "express";
-import mongoose from "mongoose";
-import dotenv from "dotenv";
-import cors from "cors"; // Import the cors package
-import AdminUserRoutes from "./routes/AdminUserRoutes.js";
-import ShopRoutes from "./routes/shopRoutes.js";
-import productRoutes from "./routes/productRoute.js"; // Add product routes
-import promotionRoutes from "./routes/promotionRoutes.js";
-import WishlistRoutes from "./routes/wishListRoutes.js";
+import express from 'express';
+import mongoose from 'mongoose';
+import dotenv from 'dotenv';
+import cors from 'cors'; // Import the cors package
+import AdminUserRoutes from './routes/AdminUserRoutes.js';
+import ShopRoutes from './routes/shopRoutes.js';
+import productRoutes from './routes/productRoute.js';  // Add product routes
+import promotionRoutes from './routes/promotionRoutes.js'
 
 const app = express();
 
@@ -30,8 +29,13 @@ mongoose
   .catch((err) => console.error("MongoDB connection error:", err));
 
 // Routes
+
+//admin - aathif
 app.use("/api/admin/users", AdminUserRoutes);
 app.use("/api/admin/shops", ShopRoutes);
+app.use('/api/admin/products', AdminProdRoutes);
+
+
 app.use("/api/products", productRoutes); // Add product routes
 app.use("/api/promotion", promotionRoutes);
 app.use("/api/wishlist", WishlistRoutes);

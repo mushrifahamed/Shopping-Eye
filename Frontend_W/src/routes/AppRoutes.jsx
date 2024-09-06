@@ -11,8 +11,12 @@ import Dashboard from '../screens/Dashboard/Dashboard.jsx';
 import Sidebar from '../components/SideBar.jsx';
 
 //Shops
-import Shops from '../screens/Shop/BrowseShops.jsx'
+import Shops from '../screens/Shop/BrowseShops.jsx';
 import AddShop from '../screens/Shop/AddShop.jsx';
+import ShopDetail from '../screens/Shop/ShopDetail.jsx';
+
+//Products
+import AddProduct from '../screens/Products/AddProduct.jsx';
 
 //Loyalty
 import AddLoyalty from '../screens/Loyalty/AddLoyalty.jsx';
@@ -35,6 +39,10 @@ const AppRoutes = () => {
         {/* Shops */}
         <Route path="/shops" element={<Shops />} />
         <Route path="/addshop" element={<AddShop />} />
+        <Route path="/shop/:id" element={<ShopDetail />} />
+
+        {/* Products */}
+        <Route path="/shop/:id/AddProduct" element={<AddProduct />} />
 
         {/* loyalty component */}
         <Route path="/AddLoyalty" element={<AddLoyalty />} />

@@ -57,3 +57,20 @@ export const getShopById = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const deleteShop = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    // Find the shop by ID and delete it
+    const deletedShop = await Shop.findByIdAndDelete(id);
+
+    if (!deletedShop) {
+      return res.status(404).json({ message: 'Shop not found' });
+    }
+
+    res.status(200).json({ message: 'Shop deleted successfully' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};

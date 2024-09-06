@@ -50,7 +50,7 @@ const AddShopForm = () => {
       };
 
       // Submit form data with image URL
-      const response = await fetch('http://localhost:8089/api/shops/addshop', {
+      const response = await fetch('http://localhost:8089/api/admin/shops/addshop', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
