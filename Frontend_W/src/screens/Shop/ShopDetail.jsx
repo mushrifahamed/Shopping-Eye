@@ -101,7 +101,7 @@ const ShopDetail = () => {
               </button>
               <button
                 onClick={handleAddProduct}
-                className="px-6 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500"
+                className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
                 Add Product
               </button>
@@ -133,7 +133,7 @@ const ShopDetail = () => {
                         </td>
                         <td className="py-2 px-4 text-gray-800">{product.name}</td>
                         <td className="py-2 px-4 text-gray-600">{product.description}</td>
-                        <td className="py-2 px-4 text-gray-900 font-semibold">${product.price}</td>
+                        <td className="py-2 px-4 text-gray-900 font-semibold">LKR {product.price}</td>
                         <td className="py-2 px-4 text-gray-600">{product.category}</td>
                       </tr>
                     ))}

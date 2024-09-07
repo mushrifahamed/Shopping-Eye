@@ -23,17 +23,17 @@ const Sidebar = () => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <aside className="w-64 bg-primary text-white p-4">
+    <aside className="w-64 bg-blue-300 text-black p-4">
       <h2 className="text-2xl font-bold mb-6">Dashboard</h2>
       <nav>
         <ul>
           <li>
           <button
               onClick={() => handleMenuClick('shops')}
-              className={`block py-2 px-4 rounded w-full text-left ${isActive('/shops') ? 'bg-secondary-600' : 'hover:bg-secondary-500'}`}
+              className={`block py-2 px-4 rounded w-full text-left ${isActive('/shops') ? 'bg-blue-600' : 'hover:bg-blue-500'}`}
             >
               <div className="flex items-center">
-                <ShoppingBagIcon className="w-6 h-6 mr-3" /> {/* Adjust size and margin */}
+                {/* <ShoppingBagIcon className="w-6 h-6 mr-3" />  Adjust size and margin */}
                 <span>Shops</span>
               </div>
               </button>
@@ -42,7 +42,7 @@ const Sidebar = () => {
                 <li>
                   <Link
                     to="/shops"
-                    className={`block py-2 px-4 rounded ${isActive('/shops') ? 'bg-secondary-600' : 'hover:bg-secondary-500'}`}
+                    className={`block py-2 px-4 rounded ${isActive('/shops') ? 'bg-blue-600' : 'hover:bg-blue-500'}`}
                   >
                     
                     View Shops
@@ -51,7 +51,7 @@ const Sidebar = () => {
                 <li>
                   <Link
                     to="/addshop"
-                    className={`block py-2 px-4 rounded ${isActive('/addshop') ? 'bg-secondary-600' : 'hover:bg-secondary-500'}`}
+                    className={`block py-2 px-4 rounded ${isActive('/addshop') ? 'bg-blue-600' : 'hover:bg-blue-500'}`}
                   >
                     Add Shop
                   </Link>
@@ -62,7 +62,7 @@ const Sidebar = () => {
           <li>
             <button
               onClick={() => handleMenuClick('loyalty')}
-              className={`block py-2 px-4 rounded w-full text-left ${isActive('/loyalty') ? 'bg-secondary-600' : 'hover:bg-secondary-500'}`}
+              className={`block py-2 px-4 rounded w-full text-left ${isActive('/loyalty') ? 'bg-blue-600' : 'hover:bg-blue-500'}`}
             >
               Loyalty
             </button>
@@ -71,7 +71,7 @@ const Sidebar = () => {
                 <li>
                   <Link
                     to="/loyalty"
-                    className={`block py-2 px-4 rounded ${isActive('/loyalty') ? 'bg-secondary-600' : 'hover:bg-secondary-500'}`}
+                    className={`block py-2 px-4 rounded ${isActive('/loyalty') ? 'bg-blue-600' : 'hover:bg-blue-500'}`}
                   >
                     View Loyalty
                   </Link>
@@ -79,7 +79,7 @@ const Sidebar = () => {
                 <li>
                   <Link
                     to="/addloyalty"
-                    className={`block py-2 px-4 rounded ${isActive('/addloyalty') ? 'bg-secondary-600' : 'hover:bg-secondary-500'}`}
+                    className={`block py-2 px-4 rounded ${isActive('/addloyalty') ? 'bg-blue-600' : 'hover:bg-blue-500'}`}
                   >
                     Add Loyalty
                   </Link>
@@ -90,7 +90,7 @@ const Sidebar = () => {
           <li>
             <button
               onClick={() => handleMenuClick('promotions')}
-              className={`block py-2 px-4 rounded w-full text-left ${isActive('/PromotionList') ? 'bg-secondary-600' : 'hover:bg-secondary-500'}`}
+              className={`block py-2 px-4 rounded w-full text-left ${isActive('/PromotionList') ? 'bg-blue-600' : 'hover:bg-blue-500'}`}
             >
               Promotions
             </button>
@@ -99,7 +99,7 @@ const Sidebar = () => {
                 <li>
                   <Link
                     to="/PromotionList"
-                    className={`block py-2 px-4 rounded ${isActive('/PromotionList') ? 'bg-secondary-600' : 'hover:bg-secondary-500'}`}
+                    className={`block py-2 px-4 rounded ${isActive('/PromotionList') ? 'bg-blue-600' : 'hover:bg-blue-500'}`}
                   >
                     View Promotions
                   </Link>
@@ -107,7 +107,7 @@ const Sidebar = () => {
                 <li>
                   <Link
                     to="/addpromotion"
-                    className={`block py-2 px-4 rounded ${isActive('/addpromotion') ? 'bg-secondary-600' : 'hover:bg-secondary-500'}`}
+                    className={`block py-2 px-4 rounded ${isActive('/addpromotion') ? 'bg-blue-600' : 'hover:bg-blue-500'}`}
                   >
                     Add Promotion
                   </Link>
@@ -118,7 +118,7 @@ const Sidebar = () => {
           <li>
             <button
               onClick={handleLogout}
-              className="block w-full mt-4 py-2 px-4 bg-[#FF6F61] hover:bg-red-600 rounded text-left"
+              className="block w-full mt-4 py-2 px-4 bg-[#ff3b3b] hover:bg-red-600 rounded text-left"
             >
               Logout
             </button>
