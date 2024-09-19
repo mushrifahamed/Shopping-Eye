@@ -74,3 +74,27 @@ export const deleteShop = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const updateShop = async (req, res) => {
+  const { id } = req.params; // Shop ID from the request parameters
+  const { name, description, location, contactInfo, image } = req.body; // Extract data from request body
+
+  try {
+    // Find the shop by ID and update it
+    const shop = await Shop.findByIdAndUpdate(
+      id,
+      { name, description, location, contactInfo, image },
+      { new: true, runValidators: true }
+    );
+
+    if (!shop) {
+      return res.status(404).json({ message: 'Shop not found' });
+    }
+
+    // Respond with the updated shop
+    res.json(shop);
+  } catch (error) {
+    console.error('Error updating shop:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+};

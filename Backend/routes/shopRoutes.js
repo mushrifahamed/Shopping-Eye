@@ -1,5 +1,5 @@
 import express from 'express';
-import { addShop, getShops, getShopById, deleteShop } from '../controllers/shopController.js';
+import { addShop, getShops, getShopById, deleteShop, updateShop } from '../controllers/shopController.js';
 
 const router = express.Router();
 
@@ -16,6 +16,9 @@ router.get('/getshops/:id', getShopById);
 
 // DELETE /api/admin/shops/:id - Delete a shop by ID
 router.delete('/:id', deleteShop);
+
+// Route to update a shop
+router.put('/updateshop/:id', updateShop);
 
 
 export default router;
