@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Sidebar from '../../components/SideBar';
 import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import firebaseDB from '../../firebase'; // Import Firebase configuration
+import QRCode from 'qrcode'; // Import QR code generation library
+import { jsPDF } from 'jspdf'; // Import jsPDF for PDF generation
 
 const ShopDetail = () => {
   const { id } = useParams();
@@ -138,21 +140,31 @@ const ShopDetail = () => {
     }
   };
 
-  // Function to open edit modal
-  const openEditModal = (product) => {
-    setEditProduct(product);
-    setNewProductData({
-      name: product.name,
-      description: product.description,
-      price: product.price,
-      category: product.category,
-      image: null, // Reset image to null for editing
-    });
-  };
+  // Function to generate QR code and download PDF
+  const handleDownloadQR = async (product) => {
+    try {
+      const qrCodeUrl = await QRCode.toDataURL(JSON.stringify({
+        name: product.name,
+        description: product.description,
+        price: product.price,
+        category: product.category
+      }));
 
-  // Function to handle image change
-  const handleImageChange = (e) => {
-    setNewProductData({ ...newProductData, image: e.target.files[0] });
+      const doc = new jsPDF();
+      doc.setFontSize(16);
+      doc.text(`Product: ${product.name}`, 10, 10);
+      doc.text(`Description: ${product.description}`, 10, 20);
+      doc.text(`Price: LKR ${product.price}`, 10, 30);
+      doc.text(`Category: ${product.category}`, 10, 40);
+
+      // Add the QR code to the PDF
+      doc.addImage(qrCodeUrl, 'PNG', 10, 50, 100, 100);
+
+      doc.save(`${product.name}-QR.pdf`);
+    } catch (error) {
+      console.error('Failed to generate QR code:', error);
+      alert('Failed to generate QR code. Please try again.');
+    }
   };
 
   return (
@@ -208,31 +220,33 @@ const ShopDetail = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {products.map((product) => (
-                      <tr key={product._id} className="border-b">
-                        <td className="py-2 px-4 w-32">
-                          <img
-                            src={product.imageUrl}
-                            alt={product.name}
-                            className="w-full h-32 object-cover rounded"
-                          />
+                    {products.map(product => (
+                      <tr key={product._id}>
+                        <td className="py-2 px-4 border-b">
+                          <img src={product.imageUrl} alt={product.name} className="w-20 h-20 object-cover" />
                         </td>
-                        <td className="py-2 px-4 text-gray-800">{product.name}</td>
-                        <td className="py-2 px-4 text-gray-600">{product.description}</td>
-                        <td className="py-2 px-4 text-gray-900 font-semibold">LKR {product.price}</td>
-                        <td className="py-2 px-4 text-gray-600">{product.category}</td>
-                        <td className="py-2 px-4">
+                        <td className="py-2 px-4 border-b">{product.name}</td>
+                        <td className="py-2 px-4 border-b">{product.description}</td>
+                        <td className="py-2 px-4 border-b">LKR {product.price}</td>
+                        <td className="py-2 px-4 border-b">{product.category}</td>
+                        <td className="py-2 px-4 border-b space-x-2">
                           <button
-                            onClick={() => openEditModal(product)}
-                            className="px-3 py-1 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 focus:outline-none focus:ring-2 focus:ring-yellow-500"
+                            onClick={() => setEditProduct(product)}
+                            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
                           >
                             Edit
                           </button>
                           <button
                             onClick={() => handleDeleteProduct(product._id)}
-                            className="ml-2 px-3 py-1 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                            className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
                           >
                             Delete
+                          </button>
+                          <button
+                            onClick={() => handleDownloadQR(product)}
+                            className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700"
+                          >
+                            Download QR
                           </button>
                         </td>
                       </tr>
@@ -243,87 +257,9 @@ const ShopDetail = () => {
             ) : (
               <p className="text-gray-600">No products found for this shop.</p>
             )}
-
-            {editProduct && (
-              <div className="fixed inset-0 bg-gray-800 bg-opacity-75 flex justify-center items-center">
-                <div className="bg-white p-6 rounded-lg shadow-lg">
-                  <h2 className="text-2xl font-semibold mb-4">Edit Product</h2>
-                  <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      handleUpdateProduct(editProduct._id);
-                    }}
-                  >
-                    <div className="mb-4">
-                      <label className="block text-gray-700">Name:</label>
-                      <input
-                        type="text"
-                        value={newProductData.name}
-                        onChange={(e) => setNewProductData({ ...newProductData, name: e.target.value })}
-                        className="w-full border border-gray-300 p-2 rounded"
-                        required
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <label className="block text-gray-700">Description:</label>
-                      <textarea
-                        value={newProductData.description}
-                        onChange={(e) => setNewProductData({ ...newProductData, description: e.target.value })}
-                        className="w-full border border-gray-300 p-2 rounded"
-                        required
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <label className="block text-gray-700">Price:</label>
-                      <input
-                        type="number"
-                        value={newProductData.price}
-                        onChange={(e) => setNewProductData({ ...newProductData, price: e.target.value })}
-                        className="w-full border border-gray-300 p-2 rounded"
-                        required
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <label className="block text-gray-700">Category:</label>
-                      <input
-                        type="text"
-                        value={newProductData.category}
-                        onChange={(e) => setNewProductData({ ...newProductData, category: e.target.value })}
-                        className="w-full border border-gray-300 p-2 rounded"
-                        required
-                      />
-                    </div>
-                    <div className="mb-4">
-                      <label className="block text-gray-700">Image:</label>
-                      <input
-                        type="file"
-                        onChange={handleImageChange}
-                        className="w-full border border-gray-300 p-2 rounded"
-                      />
-                    </div>
-                    <div className="flex space-x-4">
-                      <button
-                        type="submit"
-                        disabled={uploading}
-                        className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                      >
-                        {uploading ? 'Updating...' : 'Update Product'}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setEditProduct(null)}
-                        className="px-6 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
-                      >
-                        Cancel
-                      </button>
-                    </div>
-                  </form>
-                </div>
-              </div>
-            )}
           </div>
         ) : (
-          <p className="text-gray-600">No shop found.</p>
+          <p className="text-gray-600">Shop details not available</p>
         )}
       </div>
     </div>
