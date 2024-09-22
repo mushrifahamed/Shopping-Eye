@@ -18,7 +18,7 @@ const ProductList = ({ navigation }) => {
 
   useEffect(() => {
     axios
-      .get("http://192.168.7.55:8089/api/products/products")
+      .get("http://192.168.1.5:8089/api/products/products")
       .then((res) => {
         setProducts(res.data);
       })
@@ -27,7 +27,7 @@ const ProductList = ({ navigation }) => {
       });
 
     axios
-      .get(`http://192.168.7.55:8089/api/wishlist/${staticUserId}`)
+      .get(`http://192.168.1.5:8089/api/wishlist/${staticUserId}`)
       .then((res) => {
         setWishlist(res.data.wishlist.products);
       })
@@ -41,7 +41,7 @@ const ProductList = ({ navigation }) => {
 
     if (isInWishlist) {
       axios
-        .post("http://192.168.7.55:8089/api/wishlist/remove", {
+        .post("http://192.168.1.5:8089/api/wishlist/remove", {
           productId: product._id,
           userId: staticUserId,
         })
@@ -54,7 +54,7 @@ const ProductList = ({ navigation }) => {
     } else {
       console.log(product._id);
       axios
-        .post("http://192.168.7.55:8089/api/wishlist/add", {
+        .post("http://192.168.1.5:8089/api/wishlist/add", {
           productId: product._id,
           userId: staticUserId,
         })
@@ -109,6 +109,10 @@ const ProductList = ({ navigation }) => {
         onPress={() =>
           navigation.navigate("Wishlist", { wishlist, toggleWishlist })
         }
+      />
+      <Button
+      title="Scan QR"
+      onPress={() => navigation.navigate("QRScanner")}
       />
     </View>
   );

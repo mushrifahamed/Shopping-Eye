@@ -29,7 +29,7 @@ const Wishlist = ({ route, navigation }) => {
           text: "Yes",
           onPress: () => {
             axios
-              .post("http://192.168.7.55:8089/api/wishlist/remove", {
+              .post("http://192.168.1.5:8089/api/wishlist/remove", {
                 productId: product._id,
                 userId: staticUserId,
               })

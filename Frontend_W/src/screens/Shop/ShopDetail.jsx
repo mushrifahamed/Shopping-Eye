@@ -143,29 +143,22 @@ const ShopDetail = () => {
   // Function to generate QR code and download PDF
   const handleDownloadQR = async (product) => {
     try {
-      const qrCodeUrl = await QRCode.toDataURL(JSON.stringify({
-        name: product.name,
-        description: product.description,
-        price: product.price,
-        category: product.category
-      }));
-
+      const qrCodeUrl = await QRCode.toDataURL(product._id); // Use product ID instead of details
+      
       const doc = new jsPDF();
       doc.setFontSize(16);
       doc.text(`Product: ${product.name}`, 10, 10);
       doc.text(`Description: ${product.description}`, 10, 20);
       doc.text(`Price: LKR ${product.price}`, 10, 30);
       doc.text(`Category: ${product.category}`, 10, 40);
-
-      // Add the QR code to the PDF
       doc.addImage(qrCodeUrl, 'PNG', 10, 50, 100, 100);
-
       doc.save(`${product.name}-QR.pdf`);
     } catch (error) {
       console.error('Failed to generate QR code:', error);
       alert('Failed to generate QR code. Please try again.');
     }
   };
+  
 
   return (
     <div className="flex min-h-screen bg-gray-100">
