@@ -11,35 +11,67 @@ import {
 import Icon from "react-native-vector-icons/Ionicons";
 
 const ProductDetail = ({ route }) => {
-  const { product, toggleWishlist, isInWishlist } = route.params;
+  const { product, productId, toggleWishlist, isInWishlist } = route.params;
   const [shop, setShop] = useState([]);
+  const [fetchedProduct, setFetchedProduct] = useState(product);
+
+  useEffect(() => {
+    const fetchProductDetails = async () => {
+      if (!product) {
+        // Only fetch if product isn't already provided
+        try {
+          const response = await axios.get(
+            `http://192.168.1.5:8089/api/products/products/${productId}`
+          );
+          setFetchedProduct(response.data);
+        } catch (err) {
+          console.error("Could not fetch product details");
+        }
+      }
+    };
+
+    fetchProductDetails();
+  }, [product, productId]);
 
   useEffect(() => {
     const fetchShop = async () => {
-      try {
-        console.log(product.name);
-        const response = await axios.get(
-          `http://192.168.7.55:8089/api/wishlist/shop-by-product/${product.name}`
-        );
-        console.log(response.data);
-        setShop(response.data); // Assuming the response returns a single shop
-      } catch (err) {
-        console.error("Could not fetch shop details");
+      if (fetchedProduct) {
+        try {
+          const response = await axios.get(
+            `http://192.168.1.5:8089/api/wishlist/shop-by-product/${fetchedProduct.name}`
+          );
+          setShop(response.data);
+        } catch (err) {
+          console.error("Could not fetch shop details");
+        }
       }
     };
 
     fetchShop();
-  }, [product.name]);
+  }, [fetchedProduct]);
+
+  if (!fetchedProduct) {
+    return <Text>Loading...</Text>; // Simple loading state
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Image source={{ uri: product.imageUrl }} style={styles.productImage} />
-      <Text style={styles.productCategory}>Category: {product.category}</Text>
-      <Text style={styles.productName}>{product.name}</Text>
-      <Text style={styles.productPrice}>LKR {product.price.toFixed(2)}</Text>
-      <Text style={styles.productDescription}>{product.description}</Text>
+      <Image
+        source={{ uri: fetchedProduct.imageUrl }}
+        style={styles.productImage}
+      />
+      <Text style={styles.productCategory}>
+        Category: {fetchedProduct.category}
+      </Text>
+      <Text style={styles.productName}>{fetchedProduct.name}</Text>
+      <Text style={styles.productPrice}>
+        LKR {fetchedProduct.price.toFixed(2)}
+      </Text>
+      <Text style={styles.productDescription}>
+        {fetchedProduct.description}
+      </Text>
       <TouchableOpacity
-        onPress={() => toggleWishlist(product)}
+        onPress={() => toggleWishlist(fetchedProduct)}
         style={styles.wishlistButton}
       >
         <Icon
@@ -51,21 +83,19 @@ const ProductDetail = ({ route }) => {
 
       <View style={styles.shopContainer}>
         <Text style={styles.shopTitle}>Available at:</Text>
-        {shop.map((Shop) => {
-          return (
-            <>
-              <Text style={styles.shopName}>{Shop.name}</Text>
-              <Text style={styles.shopDescription}>{Shop.description}</Text>
-              <Text style={styles.shopLocation}>Location: {Shop.location}</Text>
-              <Text style={styles.shopLocation}>
-                Contact Number: {Shop.contactInfo.phone}
-              </Text>
-              <Text style={styles.shopLocation}>
-                Email: {Shop.contactInfo.email}
-              </Text>
-            </>
-          );
-        })}
+        {shop.map((Shop, index) => (
+          <View key={index}>
+            <Text style={styles.shopName}>{Shop.name}</Text>
+            <Text style={styles.shopDescription}>{Shop.description}</Text>
+            <Text style={styles.shopLocation}>Location: {Shop.location}</Text>
+            <Text style={styles.shopLocation}>
+              Contact Number: {Shop.contactInfo.phone}
+            </Text>
+            <Text style={styles.shopLocation}>
+              Email: {Shop.contactInfo.email}
+            </Text>
+          </View>
+        ))}
       </View>
     </ScrollView>
   );
@@ -136,9 +166,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "gray",
     marginBottom: 5,
-  },
-  shopContact: {
-    fontSize: 14,
-    color: "gray",
   },
 });
