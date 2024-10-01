@@ -3,12 +3,17 @@ import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 import cors from 'cors'; // Import the cors package
+
+// Routes
 import AdminProdRoutes from './routes/AdminProdRoutes.js'
 import AdminUserRoutes from './routes/AdminUserRoutes.js';
 import ShopRoutes from './routes/shopRoutes.js';
 import productRoutes from './routes/productRoute.js';  // Add product routes
 import promotionRoutes from './routes/promotionRoutes.js'
 import WishlistRoutes from './routes/wishListRoutes.js'
+import OtherRoutes from './routes/OtherRoutes.js'
+import UserRoutes from './routes/UserRoutes.js'
+
 
 const app = express();
 
@@ -37,10 +42,14 @@ app.use("/api/admin/users", AdminUserRoutes);
 app.use("/api/admin/shops", ShopRoutes);
 app.use('/api/admin/products', AdminProdRoutes);
 
-
+//user
 app.use("/api/products", productRoutes); // Add product routes
 app.use("/api/promotion", promotionRoutes);
 app.use("/api/wishlist", WishlistRoutes);
+app.use("/api/user", UserRoutes);
+
+//other
+app.use("/api/other", OtherRoutes);
 
 
 export default app;

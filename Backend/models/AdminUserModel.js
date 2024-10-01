@@ -9,7 +9,7 @@ const AdminUserSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now },
   type: { 
     type: String,
-    default: 'customer' 
+    default: 'admin' 
   },
 });
 
