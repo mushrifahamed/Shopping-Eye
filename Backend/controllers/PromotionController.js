@@ -69,50 +69,34 @@ export const listPromotionById = async (req, res) => {
 // Update a promotion
 export const updatePromotion = async (req, res) => {
   try {
-    const latestPromotion = await Promotion.find().sort({ _id: -1 }).limit(1);
-    let promotionId;
+    const { _id } = req.params; // Get the promotion ID from the URL parameters
+    const { title, description, start_date, end_date, percentage, image_url } = req.body;
 
-    if (latestPromotion.length !== 0) {
-      const latestId = parseInt(latestPromotion[0].promotionId.slice(1)); // Remove "P" and convert to integer
-      promotionId = "P" + String(latestId + 1).padStart(3, "0"); // Increment and pad the number
-    } else {
-      promotionId = "P001"; // Default first ID
-    }
-    const { title, description, start_date, end_date, percentage } = req.body;
-    const promotion = await Promotion.findById(id);
-
+    // Check if the promotion exists
+    const promotion = await Promotion.findById(_id);
     if (!promotion) {
-      return res.status(404).send({ message: "Promotion not found" });
+      return res.status(404).send({ message: 'Promotion not found' });
     }
 
-    let imagePath = promotion.image_url;
-    if (req.file && req.file.path) {
-      if (imagePath !== "uploads/images/No-Image-Placeholder.png") {
-        fs.unlink(imagePath, (err) => {
-          if (err) console.error(err);
-        });
-      }
-      imagePath = req.file.path;
-    }
+    // Update promotion fields
+    promotion.title = title || promotion.title;
+    promotion.description = description || promotion.description;
+    promotion.start_date = start_date || promotion.start_date;
+    promotion.end_date = end_date || promotion.end_date;
+    promotion.percentage = percentage || promotion.percentage;
+    promotion.image_url = image_url !== '' ? image_url : promotion.image_url; // Only update if a new image URL is provided
+    promotion.updated_at = new Date().toISOString(); // Update the updated_at field
 
-    const updatedPromotion = {
-      id,
-      title,
-      description,
-      start_date,
-      end_date,
-      image_url: imagePath,
-      percentage,
-      updated_at: new Date().toISOString(),
-    };
+    // Save the updated promotion
+    const updatedPromotion = await promotion.save();
 
-    await Promotion.findByIdAndUpdate(id, updatedPromotion);
-    res.status(200).send({ message: "Promotion updated successfully" });
+    res.status(200).json(updatedPromotion);
   } catch (error) {
     console.error(error);
     res.status(500).send({ message: error.message });
   }
 };
+
 
 // Delete a promotion
 export const deletePromotion = async (req, res) => {

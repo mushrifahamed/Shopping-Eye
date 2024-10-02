@@ -22,6 +22,7 @@ import AddProduct from '../screens/Products/AddProduct.jsx';
 import AddLoyalty from '../screens/Loyalty/AddLoyalty.jsx';
 import AddPromotion from '../screens/Promotion/AddPromotion.jsx';
 import PromotionList from '../screens/Promotion/PromotionList.jsx';
+import UpdatePromotion from '../screens/Promotion/UpdatePromotion.jsx';
 
 const AppRoutes = () => {
   return (
@@ -52,6 +53,9 @@ const AppRoutes = () => {
         
         {/* promotion component */}
         <Route path="/PromotionList" element={<PromotionList />} />
+
+         {/* promotion component */}
+         <Route path="/UpdatePromotion" element={<UpdatePromotion />} />
 
 
       </Routes>

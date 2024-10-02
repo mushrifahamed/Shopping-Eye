@@ -12,7 +12,7 @@ Router.get('/listPromotions', listPromotions);
 Router.delete('/deletePromotion/:_id', deletePromotion);
 
 // Route to get a specific promotion by ID
-Router.get('/update/:id', updatePromotion);
+Router.put('/updatePromotion/:_id', updatePromotion);
 
 // Route to update a specific promotion by ID
 
