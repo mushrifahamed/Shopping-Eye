@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, TextInput, Button, Text, StyleSheet } from "react-native";
 import axios from "axios";
+import { IPAddress } from "../config";
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState("");
@@ -8,7 +9,7 @@ const ForgotPassword = () => {
   const handleForgotPassword = async () => {
     try {
       const response = await axios.post(
-        "http://192.168.1.3:8089/api/user/reset-password",
+        `http://${IPAddress}:8089/api/user/reset-password`,
         {
           email,
         }

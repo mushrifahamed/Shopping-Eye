@@ -11,6 +11,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import axios from "axios";
 import { useWishlist } from "./WishlistContext.js"; // Adjust the path accordingly
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
+import { IPAddress } from "../config.js";
 
 const ProductList = ({ navigation }) => {
   const { wishlist, addToWishlist, removeFromWishlist } = useWishlist(); // Use the context
@@ -27,7 +28,7 @@ const ProductList = ({ navigation }) => {
 
     // Fetch products
     axios
-      .get("http://192.168.1.3:8089/api/products/products")
+      .get(`http://${IPAddress}:8089/api/products/products`)
       .then((res) => {
         setProducts(res.data);
       })
@@ -44,8 +45,8 @@ const ProductList = ({ navigation }) => {
 
     const isInWishlist = wishlist.some((item) => item._id === product._id);
     const url = isInWishlist
-      ? "http://192.168.1.3:8089/api/wishlist/remove"
-      : "http://192.168.1.3:8089/api/wishlist/add";
+      ? `http://${IPAddress}:8089/api/wishlist/remove`
+      : `http://${IPAddress}:8089/api/wishlist/add`;
 
     const requestBody = {
       productId: product._id,
