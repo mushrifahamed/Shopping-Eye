@@ -55,7 +55,7 @@ export const listPromotions = async (req, res) => {
 // Get a promotion by ID
 export const listPromotionById = async (req, res) => {
   try {
-    const promotion = await Promotion.findById(req.params.id);
+    const promotion = await Promotion.findById(req.params._id); // Ensure you're using req.params._id
     if (!promotion) {
       return res.status(404).send({ message: "Promotion not found" });
     }

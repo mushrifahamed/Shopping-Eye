@@ -1,5 +1,5 @@
 import express from 'express';
-import { createPromotion,listPromotions,deletePromotion,getPromotionsByDateRange, updatePromotion} from '../controllers/PromotionController.js';
+import { createPromotion,listPromotions,deletePromotion,getPromotionsByDateRange, updatePromotion, listPromotionById} from '../controllers/PromotionController.js';
 const Router = express.Router();
 
 // Route to create a new promotion
@@ -14,7 +14,9 @@ Router.delete('/deletePromotion/:_id', deletePromotion);
 // Route to get a specific promotion by ID
 Router.put('/updatePromotion/:_id', updatePromotion);
 
-// Route to update a specific promotion by ID
+// Route to get a specific promotion by ID
+Router.get('/listPromotionById/:_id', listPromotionById); // Added GET route
+
 
 
 // Route to get a report or analytics on promotions (if applicable)

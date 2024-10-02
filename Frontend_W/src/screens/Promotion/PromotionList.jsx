@@ -113,7 +113,7 @@ const PromotionTablePage = () => {
                     </td>
                     <td className="px-6 py-4 border-b">
   <div className="flex flex-col space-y-2">
-    <Link to={`../UpdatePromotion`}>
+    <Link to={`../UpdatePromotion/${promo._id}`}>
       <button
         className="px-4 py-2 text-sm font-medium text-white bg-green-600 rounded-md hover:bg-green-700 focus:outline-none"
       >

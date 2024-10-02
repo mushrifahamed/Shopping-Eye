@@ -7,7 +7,7 @@ import Sidebar from '../../components/SideBar';
 
 const PromotionForm = () => {
   const navigate = useNavigate();
-  const {  id } = useParams(); // Get promotion ID from the URL (for editing)
+  const { _id} = useParams(); // Get promotion ID from the URL (for editing)
   const [promotion, setPromotion] = useState({
     title: '',
     description: '',
@@ -23,18 +23,28 @@ const PromotionForm = () => {
 
   // Fetch promotion data if ID is present (Edit Mode)
   useEffect(() => {
-    if ( id) {
+    if ( _id) {
       const fetchPromotion = async () => {
         try {
-          const response = await axios.get(`http://localhost:8089/api/promotion/UpdatePromotion/${ id}`);
-          setPromotion(response.data);
+          const response = await axios.get(`http://localhost:8089/api/promotion/listPromotionById/${_id}`);
+          console.log('Fetched Promotion Data:', response.data); // Check the structure
+
+    // Ensure to extract only the date part (YYYY-MM-DD)
+    setPromotion({
+      title: response.data.title,
+      description: response.data.description,
+      start_date: response.data.start_date.substring(0, 10), // Extract YYYY-MM-DD
+      end_date: response.data.end_date.substring(0, 10),     // Extract YYYY-MM-DD
+      image_url: response.data.image_url,
+      percentage: response.data.percentage,
+    });
         } catch (error) {
           console.error('Error fetching promotion:', error);
         }
       };
       fetchPromotion();
     }
-  }, [ id]);
+  }, [ _id]);
 
   const validate = () => {
     const newErrors = {};
@@ -89,9 +99,9 @@ const PromotionForm = () => {
           image_url: image ? await uploadImageToFirebase(image) : promotion.image_url,
         };
 
-        if (id) {
+        if (_id) {
           // Update existing promotion (PUT request)
-          await axios.put(`http://localhost:8089/api/promotion/listPromotions/${_id}`, updatedPromotion, {
+          await axios.put(`http://localhost:8089/api/promotion/UpdatePromotion/${_id}`, updatedPromotion, {
             headers: { 'Content-Type': 'application/json' },
           });
         } else {
@@ -123,7 +133,7 @@ const PromotionForm = () => {
       <div className="flex-1 p-8">
         <div className="max-w-4xl mx-auto p-8 bg-white rounded-lg shadow-md">
           <h2 className="text-3xl font-semibold mb-6 text-gray-900">
-            {id ? 'Update Promotion' : 'Create New Promotion'}
+            {_id ? 'Update Promotion' : 'Create New Promotion'}
           </h2>
           <form onSubmit={handleSubmit} className="space-y-6">
             {uploading && <p className="text-blue-500">Uploading image...</p>}
@@ -209,7 +219,7 @@ const PromotionForm = () => {
                 onClick={handleAddImageClick}
                 className="mt-2 inline-flex items-center px-4 py-2 border border-transparent text-sm leading-4 font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
-                {image ? 'Change Image' : 'Add Image'}
+                {image ? 'Change Image' : 'Update Image'}
               </button>
               <input
                 type="file"
@@ -234,7 +244,7 @@ const PromotionForm = () => {
                 type="submit"
                 className="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
               >
-                { id ? 'Update Promotion' : 'Submit'}
+                { _id ? 'Update ' : 'Submit'}
               </button>
             </div>
           </form>

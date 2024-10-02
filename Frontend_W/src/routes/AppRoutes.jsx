@@ -55,7 +55,7 @@ const AppRoutes = () => {
         <Route path="/PromotionList" element={<PromotionList />} />
 
          {/* promotion component */}
-         <Route path="/UpdatePromotion" element={<UpdatePromotion />} />
+         <Route path="/UpdatePromotion/:_id" element={<UpdatePromotion />} />
 
 
       </Routes>
