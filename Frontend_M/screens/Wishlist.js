@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -9,12 +9,23 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import axios from "axios";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
+import { useWishlist } from "./WishlistContext.js"; // Adjust the path accordingly
 
-const Wishlist = ({ route, navigation }) => {
-  const { wishlist, toggleWishlist } = route.params;
-  const [localWishlist, setLocalWishlist] = useState(wishlist);
+const Wishlist = ({ navigation }) => {
+  const { wishlist, removeFromWishlist } = useWishlist(); // Use the context
   const [message, setMessage] = useState("");
-  const staticUserId = "staticUser123"; // Static user ID
+  const [userId, setUserId] = useState(null);
+
+  // Fetch the user ID when the component is mounted
+  const fetchUserId = async () => {
+    const storedUserId = await AsyncStorage.getItem("userID");
+    setUserId(storedUserId);
+  };
+
+  useEffect(() => {
+    fetchUserId();
+  }, []);
 
   const handleDelete = (product) => {
     Alert.alert(
@@ -28,18 +39,17 @@ const Wishlist = ({ route, navigation }) => {
         {
           text: "Yes",
           onPress: () => {
+            if (!userId) return;
+
             axios
-              .post("http://192.168.1.5:8089/api/wishlist/remove", {
+              .post("http://192.168.1.3:8089/api/wishlist/remove", {
                 productId: product._id,
-                userId: staticUserId,
+                userId: userId,
               })
               .then(() => {
-                toggleWishlist(product); // Update the wishlist state in App
-                setLocalWishlist((prevWishlist) =>
-                  prevWishlist.filter((item) => item._id !== product._id)
-                ); // Update local state
+                removeFromWishlist(product._id); // Remove from context
                 setMessage("Successfully deleted");
-                setTimeout(() => setMessage(""), 2000); // Clear message after 2 seconds
+                setTimeout(() => setMessage(""), 2000);
               })
               .catch((err) => {
                 console.error(err);
@@ -56,7 +66,6 @@ const Wishlist = ({ route, navigation }) => {
         onPress={() =>
           navigation.navigate("ProductDetail", {
             product: item,
-            toggleWishlist,
             isInWishlist: true,
           })
         }
@@ -73,9 +82,9 @@ const Wishlist = ({ route, navigation }) => {
     <View style={styles.container}>
       <Text style={styles.title}>My Wishlist</Text>
       {message ? <Text style={styles.message}>{message}</Text> : null}
-      {localWishlist.length > 0 ? (
+      {wishlist.length > 0 ? (
         <FlatList
-          data={localWishlist}
+          data={wishlist}
           keyExtractor={(item) => item._id}
           renderItem={renderWishlistItem}
         />
@@ -87,6 +96,8 @@ const Wishlist = ({ route, navigation }) => {
 };
 
 export default Wishlist;
+
+// Styles remain unchanged...
 
 const styles = StyleSheet.create({
   container: {

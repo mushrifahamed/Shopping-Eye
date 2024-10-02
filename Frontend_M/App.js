@@ -1,20 +1,21 @@
-import React, { useState, useEffect } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { createStackNavigator } from '@react-navigation/stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState, useEffect } from "react";
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { createStackNavigator } from "@react-navigation/stack";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-import ProductList from './screens/ProductList';
-import Wishlist from './screens/Wishlist';
-import QRScanner from './screens/QRScanner';
-import ProductDetail from './screens/ProductDetail';
-import Home from './screens/Home'; 
-import CategoryProducts from './screens/CategoryProducts';
-import ForgotPassword from './screens/ForgotPassword';
-import RegisterScreen from './screens/RegisterScreen';
-import LoginScreen from './screens/LoginScreen';
-import Profile from './screens/Profile';
+import ProductList from "./screens/ProductList";
+import Wishlist from "./screens/Wishlist";
+import QRScanner from "./screens/QRScanner";
+import ProductDetail from "./screens/ProductDetail";
+import Home from "./screens/Home";
+import CategoryProducts from "./screens/CategoryProducts";
+import ForgotPassword from "./screens/ForgotPassword";
+import RegisterScreen from "./screens/RegisterScreen";
+import LoginScreen from "./screens/LoginScreen";
+import Profile from "./screens/Profile";
+import { WishlistProvider } from "./screens/WishlistContext"
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -40,15 +41,35 @@ function ProductStack() {
   );
 }
 
+// Stack Navigator for QR Scanner and Product Detail
+function QRScannerStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="QRScanner" component={QRScanner} />
+      <Stack.Screen name="ProductDetail" component={ProductDetail} />
+    </Stack.Navigator>
+  );
+}
+
+function WishlistStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="Wishlist" component={Wishlist} />
+    </Stack.Navigator>
+  );
+}
+
 // Stack Navigator for Authentication
 function AuthStack({ onLoginSuccess }) {
   return (
     <Stack.Navigator>
-      <Stack.Screen 
-        name="Login" 
-        component={(props) => <LoginScreen {...props} onLoginSuccess={onLoginSuccess} />}
+      <Stack.Screen
+        name="Login"
+        component={(props) => (
+          <LoginScreen {...props} onLoginSuccess={onLoginSuccess} />
+        )}
       />
-      <Stack.Screen name='Register' component={RegisterScreen} />
+      <Stack.Screen name="Register" component={RegisterScreen} />
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
     </Stack.Navigator>
   );
@@ -61,11 +82,11 @@ export default function App() {
   useEffect(() => {
     const checkAuthStatus = async () => {
       try {
-        const token = await AsyncStorage.getItem('token');
-        console.log('Token retrieved:', token); // Debugging log
+        const token = await AsyncStorage.getItem("token");
+        console.log("Token retrieved:", token); // Debugging log
         setIsAuthenticated(!!token); // Check if the user is authenticated
       } catch (error) {
-        console.error('Error checking auth status:', error); // Error handling
+        console.error("Error checking auth status:", error); // Error handling
       } finally {
         setLoading(false); // Update loading state
       }
@@ -74,8 +95,9 @@ export default function App() {
     checkAuthStatus();
   }, []);
 
-  const handleLoginSuccess = (token) => {
-    AsyncStorage.setItem('token', token); // Store the token
+  const handleLoginSuccess = (token, userID) => {
+    AsyncStorage.setItem("token", token); // Store the token
+    AsyncStorage.setItem("userID", userID);
     setIsAuthenticated(true); // Update state to reflect authenticated status
   };
 
@@ -84,38 +106,52 @@ export default function App() {
   }
 
   return (
-    <NavigationContainer>
-      {isAuthenticated ? ( // If authenticated, show the main app
-        <Tab.Navigator
-          screenOptions={({ route }) => ({
-            tabBarIcon: ({ focused, color, size }) => {
-              let iconName;
+    <WishlistProvider>
+      <NavigationContainer>
+        {isAuthenticated ? ( // If authenticated, show the main app
+          <Tab.Navigator
+            screenOptions={({ route }) => ({
+              tabBarIcon: ({ focused, color, size }) => {
+                let iconName;
 
-              // Define icons for each tab
-              if (route.name === 'Home') {
-                iconName = focused ? 'home' : 'home-outline';
-              } else if (route.name === 'Products') {
-                iconName = focused ? 'list' : 'list-outline';
-              } else if (route.name === 'Wishlist') {
-                iconName = focused ? 'heart' : 'heart-outline';
-              } else if (route.name === 'QRScanner') {
-                iconName = focused ? 'qr-code' : 'qr-code-outline';
-              }
+                // Define icons for each tab
+                if (route.name === "Home") {
+                  iconName = focused ? "home" : "home-outline";
+                } else if (route.name === "Products") {
+                  iconName = focused ? "list" : "list-outline";
+                } else if (route.name === "Wishlist") {
+                  iconName = focused ? "heart" : "heart-outline";
+                } else if (route.name === "QRScanner") {
+                  iconName = focused ? "qr-code" : "qr-code-outline";
+                }
 
-              return <Ionicons name={iconName} size={size} color={color} />;
-            },
-            tabBarActiveTintColor: 'tomato',
-            tabBarInactiveTintColor: 'gray',
-          })}
-        >
-          <Tab.Screen name="Home" component={HomeStack} options={{ headerShown: false }}/>
-          <Tab.Screen name="Products" component={ProductStack} options={{ headerShown: false }} />
-          <Tab.Screen name="Wishlist" component={Wishlist} />
-          <Tab.Screen name="QRScanner" component={QRScanner} />
-        </Tab.Navigator>
-      ) : (
-        <AuthStack onLoginSuccess={handleLoginSuccess} /> // If not authenticated, show auth stack
-      )}
-    </NavigationContainer>
+                return <Ionicons name={iconName} size={size} color={color} />;
+              },
+              tabBarActiveTintColor: "tomato",
+              tabBarInactiveTintColor: "gray",
+            })}
+          >
+            <Tab.Screen
+              name="Home"
+              component={HomeStack}
+              options={{ headerShown: false }}
+            />
+            <Tab.Screen
+              name="Products"
+              component={ProductStack}
+              options={{ headerShown: false }}
+            />
+            <Tab.Screen name="Wishlist" component={WishlistStack} />
+            <Tab.Screen
+              name="QRScanner"
+              component={QRScannerStack}
+              options={{ headerShown: false }}
+            />
+          </Tab.Navigator>
+        ) : (
+          <AuthStack onLoginSuccess={handleLoginSuccess} /> // If not authenticated, show auth stack
+        )}
+      </NavigationContainer>
+    </WishlistProvider>
   );
 }

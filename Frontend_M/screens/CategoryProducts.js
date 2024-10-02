@@ -1,6 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity } from 'react-native';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+} from "react-native";
+import axios from "axios";
 
 const CategoryProducts = ({ route, navigation }) => {
   const { category } = route.params;
@@ -12,7 +19,7 @@ const CategoryProducts = ({ route, navigation }) => {
   const toggleWishlist = (productId) => {
     setWishlist((prevWishlist) => {
       if (prevWishlist.includes(productId)) {
-        return prevWishlist.filter(id => id !== productId);
+        return prevWishlist.filter((id) => id !== productId);
       } else {
         return [...prevWishlist, productId];
       }
@@ -26,13 +33,17 @@ const CategoryProducts = ({ route, navigation }) => {
   useEffect(() => {
     const fetchProductsByCategory = async () => {
       try {
-        const response = await axios.get('http://192.168.1.5:8089/api/products/products');
-        const filteredProducts = response.data.filter(product => product.category === category);
+        const response = await axios.get(
+          "http://192.168.1.3:8089/api/products/products"
+        );
+        const filteredProducts = response.data.filter(
+          (product) => product.category === category
+        );
         setProducts(filteredProducts);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching products:', error);
-        setError('Failed to load products');
+        console.error("Error fetching products:", error);
+        setError("Failed to load products");
         setLoading(false);
       }
     };
@@ -73,7 +84,10 @@ const CategoryProducts = ({ route, navigation }) => {
               })
             }
           >
-            <Image source={{ uri: item.imageUrl }} style={styles.productImage} />
+            <Image
+              source={{ uri: item.imageUrl }}
+              style={styles.productImage}
+            />
             <View style={styles.productDetails}>
               <Text style={styles.productText}>{item.name}</Text>
               <Text style={styles.productPrice}>Price: ${item.price}</Text>
@@ -89,38 +103,38 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   loader: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   errorContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
   },
   errorText: {
-    color: 'red',
+    color: "red",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 16,
   },
   productItem: {
-    flexDirection: 'row',
+    flexDirection: "row",
     margin: 8,
     borderRadius: 8,
-    backgroundColor: '#f9f9f9',
+    backgroundColor: "#f9f9f9",
     elevation: 1,
-    shadowColor: '#000',
+    shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 4,
-    alignItems: 'center',
+    alignItems: "center",
     padding: 8,
   },
   productImage: {
@@ -134,11 +148,11 @@ const styles = StyleSheet.create({
   },
   productText: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   productPrice: {
     fontSize: 16,
-    color: 'gray',
+    color: "gray",
   },
 });
 

@@ -9,7 +9,7 @@ const RegisterScreen = ({ navigation }) => {
 
   const handleRegister = async () => {
     try {
-      const response = await axios.post('http://192.168.1.5:8089/api/user/register', {
+      const response = await axios.post('http://192.168.1.3:8089/api/user/register', {
         fullName,
         email,
         password,

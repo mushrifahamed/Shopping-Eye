@@ -2,14 +2,14 @@ import Wishlist from "../models/wishlistModel.js";
 import Product from "../models/productModel.js"; // Import the Product model
 import mongoose from "mongoose";
 import Shop from "../models/shopModel.js";
-
-// Static user ID for testing
-const staticUserId = "staticUser123";
+import User from "../models/UserModel.js";
 
 // Create a new wishlist for the static user
 export const createWishlist = async (req, res) => {
+  const { userId } = req.body; // Expect userId in the request body
+
   try {
-    const existingWishlist = await Wishlist.findOne({ user: staticUserId });
+    const existingWishlist = await Wishlist.findOne({ user: userId });
 
     if (existingWishlist) {
       return res
@@ -18,7 +18,7 @@ export const createWishlist = async (req, res) => {
     }
 
     const newWishlist = new Wishlist({
-      user: staticUserId,
+      user: userId,
       products: [],
     });
 
@@ -63,10 +63,10 @@ export const addProductToWishlist = async (req, res) => {
 
 // Remove a product from the static user's wishlist
 export const removeProductFromWishlist = async (req, res) => {
-  const { productId } = req.body;
+  const { userId, productId } = req.body;
 
   try {
-    const wishlist = await Wishlist.findOne({ user: staticUserId });
+    const wishlist = await Wishlist.findOne({ user: userId });
 
     if (!wishlist) {
       return res.status(404).json({ message: "Wishlist not found" });
@@ -88,8 +88,9 @@ export const removeProductFromWishlist = async (req, res) => {
 
 // Get wishlist for the static user
 export const getWishlistByUser = async (req, res) => {
+  const { userId } = req.params;
   try {
-    const wishlist = await Wishlist.findOne({ user: staticUserId }).populate({
+    const wishlist = await Wishlist.findOne({ user: userId }).populate({
       path: "products",
       select: "name description price category imageUrl",
     });
