@@ -6,30 +6,31 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
-  Button,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import axios from "axios";
+import { useWishlist } from "./WishlistContext.js"; // Adjust the path accordingly
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
+import { IPAddress } from "../config.js";
 
 const ProductList = ({ navigation }) => {
+  const { wishlist, addToWishlist, removeFromWishlist } = useWishlist(); // Use the context
   const [products, setProducts] = useState([]);
-  const [wishlist, setWishlist] = useState([]);
-  const staticUserId = "staticUser123"; // Static user ID
+  const [userId, setUserId] = useState(null); // State for user ID
 
   useEffect(() => {
+    const fetchUserId = async () => {
+      const storedUserId = await AsyncStorage.getItem("userID"); // Get user ID from AsyncStorage
+      setUserId(storedUserId);
+    };
+
+    fetchUserId(); // Fetch user ID on component mount
+
+    // Fetch products
     axios
-      .get("http://192.168.1.5:8089/api/products/products")
+      .get(`http://${IPAddress}:8089/api/products/products`)
       .then((res) => {
         setProducts(res.data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-
-    axios
-      .get(`http://192.168.1.5:8089/api/wishlist/${staticUserId}`)
-      .then((res) => {
-        setWishlist(res.data.wishlist.products);
       })
       .catch((err) => {
         console.error(err);
@@ -37,38 +38,37 @@ const ProductList = ({ navigation }) => {
   }, []);
 
   const toggleWishlist = (product) => {
-    const isInWishlist = wishlist.find((item) => item._id === product._id);
-
-    if (isInWishlist) {
-      axios
-        .post("http://192.168.1.5:8089/api/wishlist/remove", {
-          productId: product._id,
-          userId: staticUserId,
-        })
-        .then(() => {
-          setWishlist(wishlist.filter((item) => item._id !== product._id));
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    } else {
-      console.log(product._id);
-      axios
-        .post("http://192.168.1.5:8089/api/wishlist/add", {
-          productId: product._id,
-          userId: staticUserId,
-        })
-        .then(() => {
-          setWishlist([...wishlist, product]);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
+    if (!userId) {
+      console.log("User ID is not available.");
+      return; // Exit if userId is not available
     }
+
+    const isInWishlist = wishlist.some((item) => item._id === product._id);
+    const url = isInWishlist
+      ? `http://${IPAddress}:8089/api/wishlist/remove`
+      : `http://${IPAddress}:8089/api/wishlist/add`;
+
+    const requestBody = {
+      productId: product._id,
+      userId: userId,
+    };
+
+    axios
+      .post(url, requestBody)
+      .then(() => {
+        if (isInWishlist) {
+          removeFromWishlist(product._id);
+        } else {
+          addToWishlist(product);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   };
 
   const renderProduct = ({ item }) => {
-    const isInWishlist = wishlist.find((product) => product._id === item._id);
+    const isInWishlist = wishlist.some((product) => product._id === item._id); // Use some for boolean
     return (
       <TouchableOpacity
         onPress={() =>
@@ -104,22 +104,15 @@ const ProductList = ({ navigation }) => {
         keyExtractor={(item) => item._id}
         renderItem={renderProduct}
       />
-      <Button
-        title="Go to Wishlist"
-        onPress={() =>
-          navigation.navigate("Wishlist", { wishlist, toggleWishlist })
-        }
-      />
-      <Button
-      title="Scan QR"
-      onPress={() => navigation.navigate("QRScanner")}
-      />
     </View>
   );
 };
 
 export default ProductList;
 
+// Styles remain unchanged...
+
+// Styles remain unchanged...
 const styles = StyleSheet.create({
   container: {
     flex: 1,

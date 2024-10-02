@@ -7,6 +7,7 @@ import { useNavigation } from "@react-navigation/native";
 export default function BarcodeScanner() {
   const [hasPermission, setHasPermission] = useState(null);
   const [test, setTest] = useState("close");
+  const [loading, setLoading] = useState(false);
   const [scanned, setScanned] = useState(false);
   const navigation = useNavigation();
 
@@ -21,8 +22,10 @@ export default function BarcodeScanner() {
 
   const handleBarCodeScanned = async ({ type, data }) => {
     setScanned(true);
+    setLoading(true);
     try {
       if (data) {
+        setLoading(false);
         navigation.navigate("ProductDetail", {
           productId: data,
         });
@@ -31,6 +34,7 @@ export default function BarcodeScanner() {
           "No product found",
           `The scanned barcode did not match ${data} any product.`
         );
+        setScanned(false);
       }
     } catch (error) {
       console.error("Error fetching product:", error);
@@ -50,11 +54,17 @@ export default function BarcodeScanner() {
 
   return (
     <View style={StyleSheet.absoluteFillObject}>
-      <BarCodeScanner
-        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-        style={StyleSheet.absoluteFillObject}
-      />
-      {scanned && <Button title={test} onPress={() => setScanned(false)} />}
+      {loading ? (
+        <></>
+      ) : (
+        <>
+          <BarCodeScanner
+            onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+            style={StyleSheet.absoluteFillObject}
+          />
+          {scanned && <Button title={test} onPress={() => setScanned(false)} />}
+        </>
+      )}
     </View>
   );
 }

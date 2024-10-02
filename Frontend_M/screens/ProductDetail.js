@@ -9,19 +9,31 @@ import {
   ScrollView,
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
+import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
+import { IPAddress } from "../config.js";
 
 const ProductDetail = ({ route }) => {
   const { product, productId, toggleWishlist, isInWishlist } = route.params;
   const [shop, setShop] = useState([]);
   const [fetchedProduct, setFetchedProduct] = useState(product);
+  const [userId, setUserId] = useState(null); // State for user ID
 
   useEffect(() => {
+    const fetchUserId = async () => {
+      const storedUserId = await AsyncStorage.getItem("userId"); // Get user ID from AsyncStorage
+      setUserId(storedUserId);
+    };
+
+    fetchUserId(); // Fetch user ID on component mount
+
     const fetchProductDetails = async () => {
       if (!product) {
         // Only fetch if product isn't already provided
         try {
           const response = await axios.get(
-            `http://192.168.1.5:8089/api/products/products/${productId}`
+            `http://${IPAddress}:8089/api/products/products/${
+              productId ? productId : product._id
+            }` // Use product ID
           );
           setFetchedProduct(response.data);
         } catch (err) {
@@ -31,14 +43,14 @@ const ProductDetail = ({ route }) => {
     };
 
     fetchProductDetails();
-  }, [product, productId]);
+  }, [product]);
 
   useEffect(() => {
     const fetchShop = async () => {
       if (fetchedProduct) {
         try {
           const response = await axios.get(
-            `http://192.168.1.5:8089/api/wishlist/shop-by-product/${fetchedProduct.name}`
+            `http://${IPAddress}:8089/api/wishlist/shop-by-product/${fetchedProduct.name}`
           );
           setShop(response.data);
         } catch (err) {
@@ -102,6 +114,8 @@ const ProductDetail = ({ route }) => {
 };
 
 export default ProductDetail;
+
+// Styles remain unchanged...
 
 const styles = StyleSheet.create({
   container: {
