@@ -15,21 +15,25 @@ import ForgotPassword from "./screens/ForgotPassword";
 import RegisterScreen from "./screens/RegisterScreen";
 import LoginScreen from "./screens/LoginScreen";
 import Profile from "./screens/Profile";
-import { WishlistProvider } from "./screens/WishlistContext"
+import { WishlistProvider } from "./screens/WishlistContext";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
+
 // Stack Navigator for Home
-function HomeStack() {
+function HomeStack({ setIsAuthenticated }) {
   return (
     <Stack.Navigator>
       <Stack.Screen name="HomeScreen" component={Home} />
       <Stack.Screen name="CategoryProducts" component={CategoryProducts} />
-      <Stack.Screen name="Profile" component={Profile} />
+      <Stack.Screen name="Profile">
+        {() => <Profile setIsAuthenticated={setIsAuthenticated} />}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 }
+
 
 // Stack Navigator for Products
 function ProductStack() {
@@ -63,12 +67,9 @@ function WishlistStack() {
 function AuthStack({ onLoginSuccess }) {
   return (
     <Stack.Navigator>
-      <Stack.Screen
-        name="Login"
-        component={(props) => (
-          <LoginScreen {...props} onLoginSuccess={onLoginSuccess} />
-        )}
-      />
+      <Stack.Screen name="Login">
+        {(props) => <LoginScreen {...props} onLoginSuccess={onLoginSuccess} />}
+      </Stack.Screen>
       <Stack.Screen name="Register" component={RegisterScreen} />
       <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
     </Stack.Navigator>
@@ -113,7 +114,7 @@ export default function App() {
             screenOptions={({ route }) => ({
               tabBarIcon: ({ focused, color, size }) => {
                 let iconName;
-
+  
                 // Define icons for each tab
                 if (route.name === "Home") {
                   iconName = focused ? "home" : "home-outline";
@@ -124,7 +125,7 @@ export default function App() {
                 } else if (route.name === "QRScanner") {
                   iconName = focused ? "qr-code" : "qr-code-outline";
                 }
-
+  
                 return <Ionicons name={iconName} size={size} color={color} />;
               },
               tabBarActiveTintColor: "tomato",
@@ -133,7 +134,7 @@ export default function App() {
           >
             <Tab.Screen
               name="Home"
-              component={HomeStack}
+              children={() => <HomeStack setIsAuthenticated={setIsAuthenticated} />} // Pass setIsAuthenticated
               options={{ headerShown: false }}
             />
             <Tab.Screen
@@ -153,5 +154,5 @@ export default function App() {
         )}
       </NavigationContainer>
     </WishlistProvider>
-  );
+  );  
 }

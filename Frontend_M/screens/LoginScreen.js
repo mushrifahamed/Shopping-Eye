@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, TextInput, Button, Text, StyleSheet } from "react-native";
 import axios from "axios";
+import { IPAddress } from '../config';
 
 const LoginScreen = ({ navigation, onLoginSuccess }) => {
   const [email, setEmail] = useState("");
@@ -9,7 +10,7 @@ const LoginScreen = ({ navigation, onLoginSuccess }) => {
   const handleLogin = async () => {
     try {
       const response = await axios.post(
-        "http://192.168.1.3:8089/api/user/login",
+        `http://${IPAddress}:8089/api/user/login`,
         {
           email,
           password,
@@ -20,7 +21,7 @@ const LoginScreen = ({ navigation, onLoginSuccess }) => {
       onLoginSuccess(response.data.token , response.data._id); // Call the onLoginSuccess function with the token
 
       // Navigate to home after successful login
-      navigation.navigate("Home");
+      //navigation.navigate("Home");
     } catch (error) {
       console.error(error);
     }

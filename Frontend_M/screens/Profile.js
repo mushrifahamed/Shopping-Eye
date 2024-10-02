@@ -1,11 +1,13 @@
 // screens/ProfileScreen.js
 import React, { useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator, StyleSheet, Button, TouchableOpacity } from 'react-native';
+import { View, Text, ActivityIndicator, StyleSheet, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { IPAddress } from '../config';
+import { useNavigation } from '@react-navigation/native';
 
-const Profile = () => {
+const Profile = ({ setIsAuthenticated }) => {
+  const navigation = useNavigation(); // Get navigation object
   const [user, setUser] = useState(null); // State to store user information
   const [loading, setLoading] = useState(true); // Loading state
 
@@ -41,8 +43,9 @@ const Profile = () => {
 
   const handleLogout = async () => {
     try {
-      await AsyncStorage.removeItem('token');
-      setUser(null); // Clear user state on logout
+      await AsyncStorage.removeItem('token'); // Remove the token from storage
+      setUser(null); // Clear user state
+      setIsAuthenticated(false); // This will switch to AuthStack
     } catch (error) {
       console.error('Failed to logout:', error.message);
     }
