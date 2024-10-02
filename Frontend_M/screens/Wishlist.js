@@ -11,6 +11,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
 import { useWishlist } from "./WishlistContext.js"; // Adjust the path accordingly
+import { IPAddress } from "../config.js";
 
 const Wishlist = ({ navigation }) => {
   const { wishlist, removeFromWishlist } = useWishlist(); // Use the context
@@ -42,7 +43,7 @@ const Wishlist = ({ navigation }) => {
             if (!userId) return;
 
             axios
-              .post("http://192.168.1.3:8089/api/wishlist/remove", {
+              .post(`http://${IPAddress}:8089/api/wishlist/remove`, {
                 productId: product._id,
                 userId: userId,
               })

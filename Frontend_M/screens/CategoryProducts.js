@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import axios from "axios";
+import { IPAddress } from "../config";
 
 const CategoryProducts = ({ route, navigation }) => {
   const { category } = route.params;
@@ -34,7 +35,7 @@ const CategoryProducts = ({ route, navigation }) => {
     const fetchProductsByCategory = async () => {
       try {
         const response = await axios.get(
-          "http://192.168.1.3:8089/api/products/products"
+          `http://${IPAddress}:8089/api/products/products`
         );
         const filteredProducts = response.data.filter(
           (product) => product.category === category

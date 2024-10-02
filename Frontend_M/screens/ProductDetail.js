@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
+import { IPAddress } from "../config";
 
 const ProductDetail = ({ route }) => {
   const { product, productId, toggleWishlist, isInWishlist } = route.params;
@@ -31,7 +32,7 @@ const ProductDetail = ({ route }) => {
         // Only fetch if product isn't already provided
         try {
           const response = await axios.get(
-            `http://192.168.1.3:8089/api/products/products/${
+            `http://${IPAddress}/api/products/products/${
               productId ? productId : product._id
             }` // Use product ID
           );
@@ -50,7 +51,7 @@ const ProductDetail = ({ route }) => {
       if (fetchedProduct) {
         try {
           const response = await axios.get(
-            `http://192.168.1.3:8089/api/wishlist/shop-by-product/${fetchedProduct.name}`
+            `http://${IPAddress}:8089/api/wishlist/shop-by-product/${fetchedProduct.name}`
           );
           setShop(response.data);
         } catch (err) {
