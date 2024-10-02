@@ -10,14 +10,13 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
-import { IPAddress } from "../config";
+import { IPAddress } from "../config.js";
 
 const ProductDetail = ({ route }) => {
   const { product, productId, toggleWishlist, isInWishlist } = route.params;
   const [shop, setShop] = useState([]);
   const [fetchedProduct, setFetchedProduct] = useState(product);
   const [userId, setUserId] = useState(null); // State for user ID
-  const [isInWishlistState, setIsInWishlistState] = useState(isInWishlist); // Local wishlist state
 
   useEffect(() => {
     const fetchUserId = async () => {
@@ -32,7 +31,7 @@ const ProductDetail = ({ route }) => {
         // Only fetch if product isn't already provided
         try {
           const response = await axios.get(
-            `http://${IPAddress}/api/products/products/${
+            `http://${IPAddress}:8089/api/products/products/${
               productId ? productId : product._id
             }` // Use product ID
           );
@@ -63,23 +62,6 @@ const ProductDetail = ({ route }) => {
     fetchShop();
   }, [fetchedProduct]);
 
-  // Update the local wishlist state when the prop changes
-  useEffect(() => {
-    setIsInWishlistState(isInWishlist);
-  }, [isInWishlist]);
-
-  const handleWishlistToggle = () => {
-    // Check if the product is already in the wishlist
-    if (isInWishlistState) {
-      // If it's already in the wishlist, remove it
-      toggleWishlist(fetchedProduct, false); // Assuming toggleWishlist accepts a second parameter for removal
-    } else {
-      // If it's not in the wishlist, add it
-      toggleWishlist(fetchedProduct, true); // Assuming toggleWishlist accepts a second parameter for addition
-    }
-    setIsInWishlistState(!isInWishlistState); // Toggle local state
-  };
-
   if (!fetchedProduct) {
     return <Text>Loading...</Text>; // Simple loading state
   }
@@ -101,20 +83,20 @@ const ProductDetail = ({ route }) => {
         {fetchedProduct.description}
       </Text>
       <TouchableOpacity
-        onPress={handleWishlistToggle}
+        onPress={() => toggleWishlist(fetchedProduct)}
         style={styles.wishlistButton}
       >
         <Icon
-          name={isInWishlistState ? "heart" : "heart-outline"}
+          name={isInWishlist ? "heart" : "heart-outline"}
           size={30}
-          color={isInWishlistState ? "red" : "gray"}
+          color={isInWishlist ? "red" : "gray"}
         />
       </TouchableOpacity>
 
       <View style={styles.shopContainer}>
         <Text style={styles.shopTitle}>Available at:</Text>
         {shop.map((Shop, index) => (
-          <View key={Shop.id || `shop-${index}`}>
+          <View key={index}>
             <Text style={styles.shopName}>{Shop.name}</Text>
             <Text style={styles.shopDescription}>{Shop.description}</Text>
             <Text style={styles.shopLocation}>Location: {Shop.location}</Text>
@@ -134,6 +116,7 @@ const ProductDetail = ({ route }) => {
 export default ProductDetail;
 
 // Styles remain unchanged...
+
 const styles = StyleSheet.create({
   container: {
     padding: 20,
