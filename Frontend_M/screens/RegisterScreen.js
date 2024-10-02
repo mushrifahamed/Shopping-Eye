@@ -19,12 +19,19 @@ const RegisterScreen = ({ navigation }) => {
         }
       );
       console.log(response.data);
-      // Navigate to login after successful registration
       navigation.navigate("Login");
     } catch (error) {
-      console.error(error);
+      if (error.response) {
+        console.error("Error Response:", error.response.data);
+        console.error("Error Status:", error.response.status);
+      } else if (error.request) {
+        console.error("Error Request:", error.request);
+      } else {
+        console.error("Error Message:", error.message);
+      }
     }
   };
+  
 
   return (
     <View style={styles.container}>

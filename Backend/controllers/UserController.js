@@ -9,23 +9,25 @@ dotenv.config();
 // Use the JWT secret from the environment variable
 const JWT_SECRET = process.env.JWT_SECRET_USER;
 
-// Register a new user
 export const registerUser = async (req, res) => {
   const { fullName, email, password } = req.body;
 
   try {
+    // Check if user already exists
     const userExists = await User.findOne({ email });
-    
     if (userExists) {
       return res.status(400).json({ message: 'User already exists' });
     }
 
+    // Create a new user
     const user = await User.create({
       fullName,
       email,
-      password,
+      password, // Save the hashed password
+      role: 'user', // Set the role to 'user'
     });
 
+    // Respond with user data (excluding password)
     res.status(201).json({
       _id: user._id,
       fullName: user.fullName,
@@ -33,9 +35,11 @@ export const registerUser = async (req, res) => {
       role: user.role,
     });
   } catch (error) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Registration error:', error.message); // Log the error message for debugging
+    res.status(500).json({ message: 'Server error', error: error.message }); // Include the error message in the response (optional for debugging)
   }
 };
+
 
 // Login user
 export const loginUser = async (req, res) => {
