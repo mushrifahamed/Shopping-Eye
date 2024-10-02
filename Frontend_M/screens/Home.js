@@ -19,7 +19,7 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log(IPAddress)
+        console.log(IPAddress);
         const categoriesResponse = await axios.get(`http://${IPAddress}:8089/api/other/categories`);
         setCategories(categoriesResponse.data);
 
@@ -63,8 +63,11 @@ const Home = () => {
   };
 
   const handleProfilePress = () => {
-    // Navigate to the Profile screen
     navigation.navigate("Profile");
+  };
+
+  const handleSearchPress = () => {
+    navigation.navigate("Search"); // Navigate to the Search screen
   };
 
   const renderProductItem = ({ item }) => (
@@ -76,7 +79,10 @@ const Home = () => {
   );
 
   const renderShopItem = ({ item }) => (
-    <TouchableOpacity style={styles.shopItem}>
+    <TouchableOpacity
+      style={styles.shopItem}
+      onPress={() => navigation.navigate('ShopDetails', { shopId: item._id })} // Navigate with shopId
+    >
       <Image source={{ uri: item.image }} style={styles.shopImage} />
       <Text style={styles.shopText}>{item.name}</Text>
       <Text style={styles.shopLocation}>Location: {item.location}</Text>
@@ -93,11 +99,11 @@ const Home = () => {
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.container}>
         <View style={styles.header}>
+          <TouchableOpacity onPress={handleSearchPress} style={styles.searchIcon}>
+            <Ionicons name="search-outline" size={30} color="black" />
+          </TouchableOpacity>
           <Text style={styles.title}>Home</Text>
-          <TouchableOpacity
-            onPress={handleProfilePress}
-            style={styles.profileIcon}
-          >
+          <TouchableOpacity onPress={handleProfilePress} style={styles.profileIcon}>
             <Ionicons name="person-circle-outline" size={30} color="black" />
           </TouchableOpacity>
         </View>
@@ -168,6 +174,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 10,
+    flex: 1, // Ensure title takes up remaining space
+    textAlign: 'center', // Center the title
+  },
+  searchIcon: {
+    padding: 10,
   },
   profileIcon: {
     padding: 10,

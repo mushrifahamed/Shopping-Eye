@@ -16,6 +16,8 @@ import RegisterScreen from "./screens/RegisterScreen";
 import LoginScreen from "./screens/LoginScreen";
 import Profile from "./screens/Profile";
 import { WishlistProvider } from "./screens/WishlistContext";
+import Search from "./screens/Search";
+import ShopDetails from "./screens/ShopDetails";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -30,6 +32,8 @@ function HomeStack({ setIsAuthenticated }) {
       <Stack.Screen name="Profile">
         {() => <Profile setIsAuthenticated={setIsAuthenticated} />}
       </Stack.Screen>
+      <Stack.Screen name="Search" component={Search} />
+      <Stack.Screen name="ShopDetails" component={ShopDetails} />
     </Stack.Navigator>
   );
 }
