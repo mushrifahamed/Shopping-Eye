@@ -90,3 +90,42 @@ export const resetPassword = async (req, res) => {
     res.status(500).json({ message: 'Server error' });
   }
 };
+
+// Controller to get user information based on token
+export const getUserProfile = async (req, res) => {
+  try {
+    // Get token from headers
+    const token = req.headers.authorization && req.headers.authorization.split(' ')[1];
+
+    if (!token) {
+      return res.status(401).json({ message: 'No token provided' });
+    }
+
+    // Verify the token and extract user ID
+    const decoded = jwt.verify(token, JWT_SECRET);
+    const userId = decoded.id;
+
+    // Find the user by ID, exclude password field
+    const user = await User.findById(userId).select('-password');
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Send back the user profile
+    res.status(200).json({
+      fullName: user.fullName,
+      email: user.email,
+      role: user.role,
+      favorites: user.favorites,
+    });
+  } catch (error) {
+    console.error(error);
+    // Check if the error is due to an expired token
+    if (error.name === 'TokenExpiredError') {
+      return res.status(401).json({ message: 'Token has expired' });
+    }
+    // Handle other errors (e.g., invalid token)
+    return res.status(500).json({ message: 'Server error' });
+  }
+};

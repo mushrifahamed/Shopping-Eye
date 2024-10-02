@@ -1,17 +1,9 @@
-import React, { useEffect, useState } from "react";
-import {
-  View,
-  Text,
-  ActivityIndicator,
-  FlatList,
-  ScrollView,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-} from "react-native";
-import axios from "axios";
-import { useNavigation } from "@react-navigation/native";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import React, { useEffect, useState } from 'react';
+import { View, Text, ActivityIndicator, FlatList, ScrollView, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { IPAddress } from '../config';
 
 const Home = () => {
   const navigation = useNavigation();
@@ -27,24 +19,17 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const categoriesResponse = await axios.get(
-          "http://192.168.1.3:8089/api/other/categories"
-        );
+        console.log(IPAddress)
+        const categoriesResponse = await axios.get(`http://${IPAddress}:8089/api/other/categories`);
         setCategories(categoriesResponse.data);
 
-        const productsResponse = await axios.get(
-          "http://192.168.1.3:8089/api/products/products"
-        );
+        const productsResponse = await axios.get(`http://${IPAddress}:8089/api/products/products`);
         setProducts(productsResponse.data);
 
-        const shopsResponse = await axios.get(
-          "http://192.168.1.3:8089/api/other/shops"
-        );
+        const shopsResponse = await axios.get(`http://${IPAddress}:8089/api/other/shops`);
         setShops(shopsResponse.data);
 
-        const promotionsResponse = await axios.get(
-          "http://192.168.1.3:8089/api/promotion/listPromotions"
-        );
+        const promotionsResponse = await axios.get(`http://${IPAddress}:8089/api/promotion/listPromotions`);
         setPromotions(promotionsResponse.data);
 
         setLoading(false);
