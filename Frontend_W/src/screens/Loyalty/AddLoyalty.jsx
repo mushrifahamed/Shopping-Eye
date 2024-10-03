@@ -92,7 +92,7 @@ const LoyaltyForm = () => {
                 <option value="">-- Select User --</option>
                 {users.map(user => (
                   <option key={user._id} value={user._id}>
-                    {user.name} ({user.phoneNumber})
+                    {user.fullName || "Unknown"} 
                   </option>
                 ))}
               </select>
