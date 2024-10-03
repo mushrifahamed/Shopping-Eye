@@ -41,6 +41,16 @@ export const addProduct = async (req, res) => {
   }
 };
 
+export const getProducts = async (req, res) => {
+  try {
+    const products = await Product.find(); // Fetch all products from the database
+    res.status(200).json(products); // Send the products back as a JSON response
+  } catch (error) {
+    console.error('Error fetching products:', error); // Log the error
+    res.status(500).json({ message: 'Failed to fetch products' }); // Send an error response
+  }
+};
+
 // Controller to get products for a specific shop
 export const getShopProducts = async (req, res) => {
     try {

@@ -37,3 +37,14 @@ export const handleTapCount = async (req, res) => {
     return res.status(500).json({ message: 'Internal server error.' });
   }
 };
+
+
+export const getTapCounts = async (req, res) => {
+  try {
+    const tapCounts = await TapCount.find(); // Fetch all tap counts from the database
+    res.status(200).json(tapCounts); // Send the tap counts back as a JSON response
+  } catch (error) {
+    console.error('Error fetching tap counts:', error); // Log the error
+    res.status(500).json({ message: 'Failed to fetch tap counts' }); // Send an error response
+  }
+};
