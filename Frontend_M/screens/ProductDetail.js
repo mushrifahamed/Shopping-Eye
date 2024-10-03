@@ -62,6 +62,24 @@ const ProductDetail = ({ route }) => {
     fetchShop();
   }, [fetchedProduct]);
 
+  useEffect(() => {
+    // Invoke tap count API when the product is fetched or updated
+    const handleTapCount = async () => {
+      if (fetchedProduct) {
+        try {
+          await axios.post(`http://${IPAddress}:8089/api/tapcount/handletap`, {
+            objectId: fetchedProduct._id, // Use the fetched product ID
+            objectType: 'Product', // Specify the type as Product
+          });
+        } catch (err) {
+          console.error("Failed to record tap count");
+        }
+      }
+    };
+
+    handleTapCount();
+  }, [fetchedProduct]);
+
   if (!fetchedProduct) {
     return <Text>Loading...</Text>; // Simple loading state
   }
