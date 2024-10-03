@@ -13,6 +13,7 @@ import promotionRoutes from "./routes/promotionRoutes.js";
 import WishlistRoutes from "./routes/wishListRoutes.js";
 import OtherRoutes from "./routes/OtherRoutes.js";
 import UserRoutes from "./routes/UserRoutes.js";
+import TapCountRoutes from "./routes/TapCountRoutes.js";
 
 const app = express();
 
@@ -49,5 +50,6 @@ app.use("/api/user", UserRoutes);
 
 //other
 app.use("/api/other", OtherRoutes);
+app.use("/api/tapcount", TapCountRoutes);
 
 export default app;

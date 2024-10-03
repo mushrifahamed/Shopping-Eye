@@ -1,9 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, ActivityIndicator, FlatList, ScrollView, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import {
+  View,
+  Text,
+  ActivityIndicator,
+  FlatList,
+  ScrollView,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
 import axios from 'axios';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { IPAddress } from '../config';
+import { useWishlist } from './WishlistContext'; // Import Wishlist Context
 
 const Home = () => {
   const navigation = useNavigation();
@@ -13,6 +23,8 @@ const Home = () => {
   const [promotions, setPromotions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { wishlist, addToWishlist, removeFromWishlist } = useWishlist(); // Use wishlist context
+
   const productColumns = 2;
   const shopColumns = 2;
 
@@ -70,18 +82,48 @@ const Home = () => {
     navigation.navigate("Search"); // Navigate to the Search screen
   };
 
-  const renderProductItem = ({ item }) => (
-    <TouchableOpacity style={styles.productItem}>
-      <Image source={{ uri: item.imageUrl }} style={styles.productImage} />
-      <Text style={styles.productText}>{item.name}</Text>
-      <Text style={styles.productPrice}>Price: ${item.price}</Text>
-    </TouchableOpacity>
-  );
+  // Toggle wishlist function (similar to ProductList)
+  const toggleWishlist = (product) => {
+    const isInWishlist = wishlist.some((item) => item._id === product._id);
+    if (isInWishlist) {
+      removeFromWishlist(product._id);
+    } else {
+      addToWishlist(product);
+    }
+  };
+
+  // Render product item with wishlist toggle
+  const renderProductItem = ({ item }) => {
+    const isInWishlist = wishlist.some((product) => product._id === item._id);
+    return (
+      <TouchableOpacity
+        style={styles.productItem}
+        onPress={() =>
+          navigation.navigate("ProductDetail", {
+            product: item,
+            toggleWishlist,
+            isInWishlist,
+          })
+        }
+      >
+        <Image source={{ uri: item.imageUrl }} style={styles.productImage} />
+        <Text style={styles.productText}>{item.name}</Text>
+        <Text style={styles.productPrice}>Price: LKR {item.price}</Text>
+        <TouchableOpacity onPress={() => toggleWishlist(item)}>
+          <Ionicons
+            name={isInWishlist ? "heart" : "heart-outline"}
+            size={30}
+            color={isInWishlist ? "red" : "gray"}
+          />
+        </TouchableOpacity>
+      </TouchableOpacity>
+    );
+  };
 
   const renderShopItem = ({ item }) => (
     <TouchableOpacity
       style={styles.shopItem}
-      onPress={() => navigation.navigate('ShopDetails', { shopId: item._id })} // Navigate with shopId
+      onPress={() => navigation.navigate('ShopDetails', { shopId: item._id })}
     >
       <Image source={{ uri: item.image }} style={styles.shopImage} />
       <Text style={styles.shopText}>{item.name}</Text>
@@ -174,8 +216,8 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 10,
-    flex: 1, // Ensure title takes up remaining space
-    textAlign: 'center', // Center the title
+    flex: 1,
+    textAlign: 'center', 
   },
   searchIcon: {
     padding: 10,

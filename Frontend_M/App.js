@@ -34,6 +34,7 @@ function HomeStack({ setIsAuthenticated }) {
       </Stack.Screen>
       <Stack.Screen name="Search" component={Search} />
       <Stack.Screen name="ShopDetails" component={ShopDetails} />
+      <Stack.Screen name="ProductDetail" component={ProductDetail} />
     </Stack.Navigator>
   );
 }

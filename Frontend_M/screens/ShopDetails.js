@@ -16,6 +16,11 @@ const ShopDetails = ({ route }) => {
       try {
         const response = await axios.get(`http://${IPAddress}:8089/api/other/shops/${shopId}`);
         setShop(response.data);
+
+        await axios.post(`http://${IPAddress}:8089/api/tapcount/handletap`, {
+          objectId: shopId,
+          objectType: 'Shop',
+        });
       } catch (err) {
         setError('Failed to fetch shop details');
       } finally {
@@ -38,7 +43,7 @@ const ShopDetails = ({ route }) => {
     <View style={styles.productItem}>
       <Image source={{ uri: item.imageUrl }} style={styles.productImage} />
       <Text style={styles.productName}>{item.name}</Text>
-      <Text style={styles.productPrice}>Price: ${item.price}</Text>
+      <Text style={styles.productPrice}>Price: LKR {item.price}</Text>
     </View>
   );
 
