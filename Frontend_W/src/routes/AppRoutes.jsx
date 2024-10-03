@@ -20,6 +20,7 @@ import AddProduct from '../screens/Products/AddProduct.jsx';
 
 //Loyalty
 import AddLoyalty from '../screens/Loyalty/AddLoyalty.jsx';
+//Promotion
 import AddPromotion from '../screens/Promotion/AddPromotion.jsx';
 import PromotionList from '../screens/Promotion/PromotionList.jsx';
 import UpdatePromotion from '../screens/Promotion/UpdatePromotion.jsx';

@@ -14,6 +14,7 @@ import WishlistRoutes from "./routes/wishListRoutes.js";
 import OtherRoutes from "./routes/OtherRoutes.js";
 import UserRoutes from "./routes/UserRoutes.js";
 import TapCountRoutes from "./routes/TapCountRoutes.js";
+import LoyaltyRoutes from "./routes/LoyaltyRoutes.js";
 
 const app = express();
 
@@ -47,6 +48,7 @@ app.use("/api/products", productRoutes); // Add product routes
 app.use("/api/promotion", promotionRoutes);
 app.use("/api/wishlist", WishlistRoutes);
 app.use("/api/user", UserRoutes);
+app.use("/api/Loyalty", LoyaltyRoutes);
 
 //other
 app.use("/api/other", OtherRoutes);
