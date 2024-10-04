@@ -6,7 +6,7 @@ const LoyaltySchema = new mongoose.Schema({
     type: String,
     unique: true, // Ensure that each ID is unique
   },
-  user: {
+  userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
     required: true,
@@ -14,6 +14,7 @@ const LoyaltySchema = new mongoose.Schema({
   phoneNumber: {
     type: String,
     required: true,
+    unique: true,
   },
   points: {
     type: Number,

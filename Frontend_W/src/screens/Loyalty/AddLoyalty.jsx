@@ -60,7 +60,12 @@ const LoyaltyForm = () => {
         console.log('Loyalty account created:', response.data);
         navigate("/LoyaltyList"); // Navigate to your loyalty accounts list
       } catch (error) {
-        console.error('Error creating loyalty account', error);
+        if (error.response && error.response.data.message === 'Phone number already exists') {
+          // Display error to the user
+          setErrors({ phoneNumber: 'This phone number is already in use' });
+        }else {
+          console.error('Error creating loyalty account', error);
+        }
       } finally {
         setLoading(false);
       }
