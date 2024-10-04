@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import Sidebar from '../../components/SideBar';
-import { getStorage, ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import firebaseDB from '../../firebase'; // Firebase configuration
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Sidebar from "../../components/SideBar";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import firebaseDB from "../../firebase"; // Firebase configuration
 
 const BrowseShops = () => {
   const [shops, setShops] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [selectedShop, setSelectedShop] = useState(null);
   const [updatedData, setUpdatedData] = useState({
-    name: '',
-    description: '',
-    location: '',
+    name: "",
+    description: "",
+    location: "",
     contactInfo: {
-      phone: '',
-      email: '',
+      phone: "",
+      email: "",
     },
     image: null, // Track the image in the state
   });
@@ -27,9 +27,11 @@ const BrowseShops = () => {
   useEffect(() => {
     const fetchShops = async () => {
       try {
-        const response = await fetch('http://localhost:8089/api/admin/shops/getshops');
+        const response = await fetch(
+          "http://localhost:8089/api/admin/shops/getshops"
+        );
         if (!response.ok) {
-          throw new Error('Failed to fetch shops');
+          throw new Error("Failed to fetch shops");
         }
         const data = await response.json();
         setShops(data);
@@ -50,8 +52,8 @@ const BrowseShops = () => {
       description: shop.description,
       location: shop.location,
       contactInfo: {
-        phone: shop.contactInfo?.phone || '',
-        email: shop.contactInfo?.email || '',
+        phone: shop.contactInfo?.phone || "",
+        email: shop.contactInfo?.email || "",
       },
       image: null, // Reset image state
     });
@@ -61,7 +63,7 @@ const BrowseShops = () => {
   const handleInputChange = (e) => {
     const { name, value } = e.target;
 
-    if (name === 'phone' || name === 'email') {
+    if (name === "phone" || name === "email") {
       setUpdatedData((prevState) => ({
         ...prevState,
         contactInfo: {
@@ -96,7 +98,7 @@ const BrowseShops = () => {
 
         // Get the download URL of the uploaded image
         downloadURL = await getDownloadURL(storageRef);
-        console.log('Updated Image URL:', downloadURL);
+        console.log("Updated Image URL:", downloadURL);
       }
 
       // Prepare the shop data with updated image URL
@@ -112,24 +114,31 @@ const BrowseShops = () => {
       };
 
       // Send updated data to the server
-      const response = await fetch(`http://localhost:8089/api/admin/shops/updateshop/${selectedShop._id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(shopData),
-      });
+      const response = await fetch(
+        `http://localhost:8089/api/admin/shops/updateshop/${selectedShop._id}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(shopData),
+        }
+      );
 
       const data = await response.json();
       if (!response.ok) {
-        throw new Error(data.message || 'Failed to update shop');
+        throw new Error(data.message || "Failed to update shop");
       }
 
       setShowModal(false);
-      setError('');
+      setError("");
       setUploading(false);
       // Update the shop list after the update
-      setShops(shops.map((shop) => (shop._id === selectedShop._id ? { ...shop, ...shopData } : shop)));
+      setShops(
+        shops.map((shop) =>
+          shop._id === selectedShop._id ? { ...shop, ...shopData } : shop
+        )
+      );
     } catch (error) {
       setError(error.message);
       setUploading(false);
@@ -162,45 +171,69 @@ const BrowseShops = () => {
           <p className="text-red-500">{error}</p>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full bg-white border-gray-300 rounded-lg shadow-lg overflow-hidden">
-              <thead className="bg-white">
-                <tr>
-                  <th className="py-2 px-4 border-b text-left text-gray-700">Image</th>
-                  <th className="py-2 px-4 border-b text-left text-gray-700">Name</th>
-                  <th className="py-2 px-4 border-b text-left text-gray-700">Description</th>
-                  <th className="py-2 px-4 border-b text-left text-gray-700">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {shops
-                  .filter(shop => shop.name.toLowerCase().includes(searchTerm.toLowerCase()))
-                  .map(shop => (
-                    <tr key={shop._id} className="border-b">
-                      <td className="py-2 px-4">
-                        <img src={shop.image} alt={shop.name} className="w-16 h-16 object-cover rounded-full" />
-                      </td>
-                      <td className="py-2 px-4">{shop.name}</td>
-                      <td className="py-2 px-4">{shop.description}</td>
-                      <td className="py-2 px-4">
-                        <div className="flex space-x-2">
-                          <button
-                            onClick={() => handleUpdateClick(shop)}
-                            className="inline-block px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600"
-                          >
-                            Update
-                          </button>
-                          <a
-                            href={`/shop/${shop._id}`}
-                            className="inline-block px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                          >
-                            View Shop
-                          </a>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
+            <div className="bg-white p-6 rounded-lg shadow-lg">
+              <div className="flex justify-between mb-4">
+                <h2></h2>
+                <button
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                  onClick={() => navigate("/addshop")}
+                >
+                  Add Shop
+                </button>
+              </div>
+              <table className="min-w-full bg-white  rounded-lg  overflow-hidden border-separate border-spacing-y-4">
+                <thead class="text-xs text-black uppercase bg-gray-100">
+                  <tr>
+                    <th scope="col" class="px-6 py-3 rounded-s-lg">
+                      Image
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      Name
+                    </th>
+                    <th scope="col" class="px-6 py-3">
+                      Description
+                    </th>
+                    <th scope="col" class="px-6 py-3 rounded-e-lg">
+                      Actions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {shops
+                    .filter((shop) =>
+                      shop.name.toLowerCase().includes(searchTerm.toLowerCase())
+                    )
+                    .map((shop) => (
+                      <tr
+                        key={shop._id}
+                        className="odd:bg-gray-100 hover:bg-gray-200 mb-6"
+                      >
+                        <td className="py-2 px-4 rounded-s-lg">
+                          <img
+                            src={shop.image}
+                            alt={shop.name}
+                            className="w-16 h-16 object-cover rounded-lg"
+                          />
+                        </td>
+                        <td className="py-2 px-4">
+                          <a href={`/shop/${shop._id}`}>{shop.name}</a>
+                        </td>
+                        <td className="py-2 px-4">{shop.description}</td>
+                        <td className="py-2 px-4 rounded-e-lg">
+                          <div className="flex space-x-2">
+                            <button
+                              onClick={() => handleUpdateClick(shop)}
+                              className="inline-block px-4 py-2 bg-opacity-0 text-blue-500  rounded-lg hover:underline"
+                            >
+                              Update
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         )}
 
@@ -260,14 +293,46 @@ const BrowseShops = () => {
                   />
                 </div>
                 <div className="mb-4">
-                  <label className="block text-gray-700">Image</label>
-                  <input type="file" onChange={handleImageChange} className="w-full" />
+                  <label className="block mb-2 text-sm font-medium text-gray-900">
+                    Upload Logo
+                  </label>
+
+                  <div className="flex items-center">
+                    <label
+                      htmlFor="file-upload"
+                      className="block w-auto px-4 py-2 text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    >
+                      Choose File
+                    </label>
+                    <input
+                      id="file-upload"
+                      type="file"
+                      className="hidden"
+                      onChange={handleImageChange}
+                    />
+                    {/* Display selected file name or "No file chosen" */}
+                    <span className="ml-3 text-gray-500 text-sm">
+                      {updatedData.image
+                        ? updatedData.image.name
+                        : "No file chosen"}
+                    </span>
+                  </div>
+
+                  <p
+                    className="mt-1 text-sm text-gray-500"
+                    id="file_input_help"
+                  >
+                    JPG (Ratio 1:1).
+                  </p>
                 </div>
-                {uploading && <p className="text-blue-500">Uploading image...</p>}
+
+                {uploading && (
+                  <p className="text-blue-500">Uploading image...</p>
+                )}
                 <div className="flex justify-between">
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600"
+                    className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-green-600"
                   >
                     Update Shop
                   </button>
