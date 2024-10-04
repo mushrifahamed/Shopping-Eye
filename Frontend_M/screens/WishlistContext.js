@@ -1,6 +1,4 @@
-import axios from "axios";
-import React, { createContext, useContext, useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
+import { createContext, useContext, useState } from "react";
 
 const WishlistContext = createContext();
 
@@ -9,42 +7,15 @@ export const useWishlist = () => {
 };
 
 export const WishlistProvider = ({ children }) => {
-  const [wishlist, setWishlist] = useState([]);
+  const [refreshContext, setRefresh] = useState(1);
 
-  // Load wishlist from AsyncStorage
-  useEffect(() => {
-    const loadWishlist = async () => {
-      const storedWishlist = await AsyncStorage.getItem("wishlist");
-      if (storedWishlist) {
-        setWishlist(JSON.parse(storedWishlist)); // Parse JSON string to array
-      }
-    };
-
-    loadWishlist(); // Load wishlist on mount
-  }, []);
-
-  // Save wishlist to AsyncStorage whenever it changes
-  useEffect(() => {
-    const saveWishlist = async () => {
-      await AsyncStorage.setItem("wishlist", JSON.stringify(wishlist)); // Store as JSON string
-    };
-
-    saveWishlist(); // Save wishlist whenever it changes
-  }, [wishlist]);
-
-  const addToWishlist = (product) => {
-    setWishlist((prevWishlist) => [...prevWishlist, product]);
-  };
-
-  const removeFromWishlist = (productId) => {
-    setWishlist((prevWishlist) =>
-      prevWishlist.filter((item) => item._id !== productId)
-    );
+  const refreshWishlistContext = () => {
+    setRefresh(refreshContext + 1);
   };
 
   return (
     <WishlistContext.Provider
-      value={{ wishlist, addToWishlist, removeFromWishlist }}
+      value={{ refreshContext, refreshWishlistContext }}
     >
       {children}
     </WishlistContext.Provider>

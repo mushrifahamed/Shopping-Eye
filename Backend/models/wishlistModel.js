@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 
 const WishlistSchema = new mongoose.Schema({
-  // Temporarily, we'll store the user as a string rather than a reference to the AdminUser model.
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -9,9 +8,19 @@ const WishlistSchema = new mongoose.Schema({
   },
   products: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Product", // Reference to the Product model (which you have created)
-      required: true,
+      productId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+        required: true,
+      },
+      note: {
+        type: String,
+        default: "", // Default to empty string
+      },
+      createdAt: {
+        type: Date,
+        default: Date.now,
+      },
     },
   ],
   createdAt: {

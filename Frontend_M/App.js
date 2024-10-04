@@ -22,7 +22,6 @@ import ShopDetails from "./screens/ShopDetails";
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
-
 // Stack Navigator for Home
 function HomeStack({ setIsAuthenticated }) {
   return (
@@ -38,7 +37,6 @@ function HomeStack({ setIsAuthenticated }) {
     </Stack.Navigator>
   );
 }
-
 
 // Stack Navigator for Products
 function ProductStack() {
@@ -64,6 +62,7 @@ function WishlistStack() {
   return (
     <Stack.Navigator>
       <Stack.Screen name="Wishlist" component={Wishlist} />
+      <Stack.Screen name="ProductDetail" component={ProductDetail} />
     </Stack.Navigator>
   );
 }
@@ -119,7 +118,7 @@ export default function App() {
             screenOptions={({ route }) => ({
               tabBarIcon: ({ focused, color, size }) => {
                 let iconName;
-  
+
                 // Define icons for each tab
                 if (route.name === "Home") {
                   iconName = focused ? "home" : "home-outline";
@@ -130,7 +129,7 @@ export default function App() {
                 } else if (route.name === "QRScanner") {
                   iconName = focused ? "qr-code" : "qr-code-outline";
                 }
-  
+
                 return <Ionicons name={iconName} size={size} color={color} />;
               },
               tabBarActiveTintColor: "tomato",
@@ -139,7 +138,9 @@ export default function App() {
           >
             <Tab.Screen
               name="Home"
-              children={() => <HomeStack setIsAuthenticated={setIsAuthenticated} />} // Pass setIsAuthenticated
+              children={() => (
+                <HomeStack setIsAuthenticated={setIsAuthenticated} />
+              )} // Pass setIsAuthenticated
               options={{ headerShown: false }}
             />
             <Tab.Screen
@@ -159,5 +160,5 @@ export default function App() {
         )}
       </NavigationContainer>
     </WishlistProvider>
-  );  
+  );
 }
