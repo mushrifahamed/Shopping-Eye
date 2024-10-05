@@ -59,11 +59,11 @@ const WishlistReport = () => {
       fetchUsersWithMostWishlistItems(data);
     }
   };
-
   const generatePDF = async () => {
+    // Create a new instance of jsPDF
     const pdf = new jsPDF("p", "pt", "a4");
 
-    // Add cover page border, title, etc.
+    // Add cover page border
     pdf.setDrawColor(0);
     pdf.setLineWidth(2);
     pdf.rect(
@@ -73,65 +73,88 @@ const WishlistReport = () => {
       pdf.internal.pageSize.getHeight() - 10
     );
 
-    pdf.setFontSize(36);
+    // Add title
+    pdf.setFontSize(36); // Larger font size for the title
     const title = "Monthly Wishlist Report";
-    const titleY = 150;
+    const titleY = 150; // Adjusted vertical position for the title
     pdf.text(title, pdf.internal.pageSize.getWidth() / 2, titleY, {
       align: "center",
     });
 
-    pdf.setFontSize(24);
+    // Add subtitle
+    pdf.setFontSize(24); // Subtitle size
     const subtitle = "Views Analysis";
-    const subtitleY = 220;
+    const subtitleY = 220; // Adjusted vertical position for the subtitle
     pdf.text(subtitle, pdf.internal.pageSize.getWidth() / 2, subtitleY, {
       align: "center",
     });
 
-    // Make sure all images are loaded before taking the screenshot with html2canvas
-    const loadImages = async () => {
-      const images = Array.from(document.images); // Get all images in the document
-      return Promise.all(
-        images.map((img) => {
-          if (!img.complete) {
-            return new Promise((resolve, reject) => {
-              img.onload = resolve;
-              img.onerror = reject;
-            });
-          }
-          return Promise.resolve();
-        })
-      );
-    };
-
-    // Wait for images to load
-    await loadImages();
-
-    // Add page break to continue to the main report
-    pdf.addPage();
-
-    const input = document.getElementById("report");
-
-    html2canvas(input, { scale: 2 }).then((canvas) => {
-      const imgData = canvas.toDataURL("image/png");
-      const imgWidth = pdf.internal.pageSize.getWidth();
-      const imgHeight = (canvas.height * imgWidth) / canvas.width;
-
-      let heightLeft = imgHeight;
-      let position = 0;
-
-      pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-      heightLeft -= pdf.internal.pageSize.getHeight();
-
-      while (heightLeft >= 0) {
-        position = heightLeft - imgHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight);
-        heightLeft -= pdf.internal.pageSize.getHeight();
-      }
-
-      // Save the PDF
-      pdf.save("wishlist_report.pdf");
+    // Fetch SVG logo and add it to the PDF
+    const svg = await fetch("/logo.svg").then((response) => {
+      if (!response.ok) throw new Error("Failed to fetch SVG");
+      return response.text();
     });
+
+    const svgImage = new Image();
+    svgImage.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(
+      svg
+    )}`;
+
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    const imgWidth = 250; // Increased desired width for the logo
+    svgImage.onload = async () => {
+      const imgHeight = (svgImage.height / svgImage.width) * imgWidth;
+
+      // Set canvas dimensions
+      canvas.width = imgWidth;
+      canvas.height = imgHeight;
+
+      // Draw SVG image on canvas
+      context.drawImage(svgImage, 0, 0, imgWidth, imgHeight);
+
+      // Get the base64 data
+      const imgData = canvas.toDataURL("image/png");
+      const base64Data = imgData.split(",")[1]; // Get only the base64 part
+
+      const logoX = (pdf.internal.pageSize.getWidth() - imgWidth) / 2; // Centering the logo
+      const logoY = 300; // Adjusted vertical position for the logo
+
+      pdf.addImage(base64Data, "PNG", logoX, logoY, imgWidth, imgHeight);
+
+      // Add date to the cover page
+      const date = new Date().toLocaleDateString();
+      pdf.setFontSize(12); // Date font size
+      pdf.text(`Date: ${date}`, 10, pdf.internal.pageSize.getHeight() - 20); // Bottom left position
+
+      // Add a page break to continue to the main report
+      pdf.addPage();
+
+      // Get the element to print as an image
+      const input = document.getElementById("report");
+      html2canvas(input, { scale: 2 }).then((canvas) => {
+        const imgData = canvas.toDataURL("image/png");
+        const imgWidth = pdf.internal.pageSize.getWidth(); // Use the full width of the page
+        const imgHeight = (canvas.height * imgWidth) / canvas.width; // Calculate height to maintain aspect ratio
+        let heightLeft = imgHeight;
+
+        let position = 0;
+
+        pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight); // Align to left edge
+        heightLeft -= pdf.internal.pageSize.getHeight(); // Reduce height left by the page size
+
+        // Create additional pages if needed
+        while (heightLeft >= 0) {
+          position = heightLeft - imgHeight;
+          pdf.addPage();
+          pdf.addImage(imgData, "PNG", 0, position, imgWidth, imgHeight); // Align to left edge
+          heightLeft -= pdf.internal.pageSize.getHeight();
+        }
+
+        // Save the PDF
+        pdf.save("wishlist_report.pdf");
+      });
+    };
   };
 
   // Find the top wished product and user
