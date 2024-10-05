@@ -158,18 +158,18 @@ const WishlistReport = () => {
   };
 
   // Find the top wished product and user
-  const topWishedProduct = productsReport.reduce(
-    (max, product) => {
-      return product.count > max.count ? product : max;
-    },
-    { count: 0 }
+  // Find the maximum wishlisted product count and handle ties
+  const maxProductCount = Math.max(
+    ...productsReport.map((product) => product.count)
+  );
+  const topWishedProducts = productsReport.filter(
+    (product) => product.count === maxProductCount
   );
 
-  const topWishedUser = usersReport.reduce(
-    (max, user) => {
-      return user.totalItems > max.totalItems ? user : max;
-    },
-    { totalItems: 0 }
+  // Find the maximum wishlisted user count and handle ties
+  const maxUserItems = Math.max(...usersReport.map((user) => user.totalItems));
+  const topWishedUsers = usersReport.filter(
+    (user) => user.totalItems === maxUserItems
   );
 
   const totalProductsWishlisted = productsReport.reduce(
@@ -520,26 +520,33 @@ const WishlistReport = () => {
           {/* Summary Section */}
           <div style={{ textAlign: "center", marginTop: "30px" }}>
             <h3 style={{ color: "#4CAF50" }}>Summary</h3>
-            {topWishedProduct.count > 0 && (
+
+            {/* Top Wishlisted Products (Handling Ties) */}
+            {topWishedProducts.length > 0 && (
               <p>
-                <strong>Top Wishlisted Product:</strong>{" "}
-                {topWishedProduct._id.name}
+                <strong>Top Wishlisted Product(s):</strong>{" "}
+                {topWishedProducts
+                  .map((product) => product._id.name)
+                  .join(", ")}
               </p>
             )}
-            {topWishedUser.totalItems > 0 && (
+
+            {/* Top Wishlisted Users (Handling Ties) */}
+            {topWishedUsers.length > 0 && (
               <p>
-                <strong>Top Wishlisted User:</strong>{" "}
-                {topWishedUser._id.fullName}
+                <strong>Top Wishlisted User(s):</strong>{" "}
+                {topWishedUsers.map((user) => user._id.fullName).join(", ")}
               </p>
             )}
-            {/* New Section for Total Count */}
-            {productsReport.length > 0 && ( // Only show the total if there are products
+
+            {/* Total Count of Wishlisted Products */}
+            {productsReport.length > 0 && (
               <p>
-                <strong>Total Number Of Products Wishlisted:</strong>{" "}
+                <strong>Total Number of Products Wishlisted:</strong>{" "}
                 {totalProductsWishlisted}
               </p>
             )}
-            <p>.</p>
+            <p>...</p>
           </div>
         </div>
 
