@@ -20,6 +20,8 @@ import AddProduct from '../screens/Products/AddProduct.jsx';
 
 //Loyalty
 import AddLoyalty from '../screens/Loyalty/AddLoyalty.jsx';
+import LoyaltyList from '../screens/Loyalty/LoyaltyList.jsx';
+import LoyaltyReport from '../screens/Loyalty/LoyaltyReport.jsx';
 //Promotion
 import AddPromotion from '../screens/Promotion/AddPromotion.jsx';
 import PromotionList from '../screens/Promotion/PromotionList.jsx';
@@ -48,6 +50,8 @@ const AppRoutes = () => {
 
         {/* loyalty component */}
         <Route path="/AddLoyalty" element={<AddLoyalty />} />
+        <Route path="/LoyaltyList" element={<LoyaltyList />} />
+        <Route path="/LoyaltyReport" element={<LoyaltyReport />} />
 
         {/* promotion component */}
         <Route path="/AddPromotion" element={<AddPromotion />} />

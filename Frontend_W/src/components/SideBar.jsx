@@ -81,8 +81,8 @@ const Sidebar = () => {
               <ul className="pl-6 mt-2">
                 <li className="mb-2">
                   <Link
-                    to="/loyalty"
-                    className={`block py-2 px-4 rounded ${isActive('/loyalty') ? 'bg-blue-600 text-white hover:bg-blue-500' : 'hover:bg-blue-500 hover:text-white text-black'}`}
+                    to="/LoyaltyList"
+                    className={`block py-2 px-4 rounded ${isActive('/LoyaltyList') ? 'bg-blue-600 text-white hover:bg-blue-500' : 'hover:bg-blue-500 hover:text-white text-black'}`}
                   >
                     <div className="flex items-center">
                     <Diamond size={14} className="mr-2"/>
