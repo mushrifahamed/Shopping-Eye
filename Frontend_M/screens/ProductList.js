@@ -9,22 +9,34 @@ import {
 } from "react-native";
 import Icon from "react-native-vector-icons/Ionicons";
 import axios from "axios";
-import { useWishlist } from "./WishlistContext.js"; // Adjust the path accordingly
+import { useWishlist } from "./WishlistContext.js";
 import AsyncStorage from "@react-native-async-storage/async-storage"; // Import AsyncStorage
-import { IPAddress } from "../config.js";
+import { IPAddress } from "../config"; // Ensure this is correctly pointing to your config
 
 const ProductList = ({ navigation }) => {
-  const { wishlist, addToWishlist, removeFromWishlist } = useWishlist(); // Use the context
+  const { refreshContext, refreshWishlistContext } = useWishlist();
+  const [wishlist, setWishlist] = useState([]);
   const [products, setProducts] = useState([]);
   const [userId, setUserId] = useState(null); // State for user ID
+  const [refresh, setRefresh] = useState(1);
 
   useEffect(() => {
-    const fetchUserId = async () => {
+    const fetchUserIdAndWishlist = async () => {
       const storedUserId = await AsyncStorage.getItem("userID"); // Get user ID from AsyncStorage
       setUserId(storedUserId);
+      try {
+        const response = await axios.get(
+          `http://${IPAddress}:8089/api/wishlist/${storedUserId}`
+        );
+        setWishlist(response.data.wishlist.products); // Set the wishlist data
+      } catch (error) {
+        console.error("Error fetching wishlist:", error);
+        setMessage("Error fetching wishlist");
+        setTimeout(() => setMessage(""), 2000);
+      }
     };
 
-    fetchUserId(); // Fetch user ID on component mount
+    fetchUserIdAndWishlist(); // Fetch user ID on component mount
 
     // Fetch products
     axios
@@ -35,40 +47,50 @@ const ProductList = ({ navigation }) => {
       .catch((err) => {
         console.error(err);
       });
-  }, []);
+  }, [refresh, refreshContext]);
 
   const toggleWishlist = (product) => {
     if (!userId) {
       console.log("User ID is not available.");
       return; // Exit if userId is not available
     }
-
-    const isInWishlist = wishlist.some((item) => item._id === product._id);
+    console.log(wishlist);
+    const isInWishlist = wishlist.some(
+      (item) => item.productId._id === product._id
+    );
+    console.log(isInWishlist);
     const url = isInWishlist
       ? `http://${IPAddress}:8089/api/wishlist/remove`
       : `http://${IPAddress}:8089/api/wishlist/add`;
 
+    // Predefined note for the product; modify this logic as needed
+    const note = `Note for ${product.name}`; // Example note, change as needed
+
     const requestBody = {
       productId: product._id,
       userId: userId,
+      note: note, // Pass the predefined note
     };
 
     axios
       .post(url, requestBody)
-      .then(() => {
-        if (isInWishlist) {
-          removeFromWishlist(product._id);
-        } else {
-          addToWishlist(product);
-        }
+      .then((res) => {
+        console.log(res.data);
+        setRefresh(refresh + 1);
+        refreshWishlistContext();
       })
       .catch((err) => {
-        console.error(err);
+        console.error(
+          "Error toggling wishlist:",
+          err.response?.data || err.message
+        ); // Log specific error
       });
   };
 
   const renderProduct = ({ item }) => {
-    const isInWishlist = wishlist.some((product) => product._id === item._id); // Use some for boolean
+    const isInWishlist = wishlist.some(
+      (product) => product.productId._id === item._id
+    ); // Use some for boolean
     return (
       <TouchableOpacity
         onPress={() =>
@@ -109,8 +131,6 @@ const ProductList = ({ navigation }) => {
 };
 
 export default ProductList;
-
-// Styles remain unchanged...
 
 // Styles remain unchanged...
 const styles = StyleSheet.create({
