@@ -48,6 +48,8 @@ const AppRoutes = () => {
 
         {/* loyalty component */}
         <Route path="/AddLoyalty" element={<AddLoyalty />} />
+        <Route path="/LoyaltyList" element={<LoyaltyList />} />
+        <Route path="/LoyaltyReport" element={<LoyaltyReport />} />
 
         {/* promotion component */}
         <Route path="/AddPromotion" element={<AddPromotion />} />
