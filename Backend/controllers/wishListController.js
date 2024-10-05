@@ -258,13 +258,17 @@ export const getMostWishedProductsInDateRange = async (req, res) => {
 
       // Step 4: Sort by count from most to least
       { $sort: { count: -1 } },
-
-      // Step 5: Optionally, you can limit the number of results
-      // { $limit: 10 } // Uncomment if you want to limit the number of products returned
     ]);
 
-    // Return the sorted result
-    res.status(200).json(result);
+    // Step 5: Populate the product details (like name)
+    const populatedResult = await Wishlist.populate(result, {
+      path: "_id",
+      select: "name imageUrl", // You can also add other fields like price, etc.
+      model: "Product",
+    });
+
+    // Return the populated result with product name
+    res.status(200).json(populatedResult);
   } catch (error) {
     console.error(error);
     res
@@ -302,19 +306,20 @@ export const getUsersWithMostWishlistItems = async (req, res) => {
 
       // Step 4: Sort users by the total number of items added in descending order
       { $sort: { totalItems: -1 } },
-
-      // Step 5: Optionally, limit the number of users returned
-      // { $limit: 10 } // Uncomment if you want to limit to top 10 users
     ]);
 
-    // Return the result
-    res.status(200).json(result);
+    // Step 5: Populate the user details
+    const populatedResult = await User.populate(result, {
+      path: "_id", // _id is the user ID after aggregation
+      select: "fullName", // Specify fields to return, e.g., fullName
+    });
+
+    // Return the result with the user's full name
+    res.status(200).json(populatedResult);
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({
-        message: "Server error while fetching users with most wishlist items",
-      });
+    res.status(500).json({
+      message: "Server error while fetching users with most wishlist items",
+    });
   }
 };

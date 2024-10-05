@@ -4,7 +4,15 @@ import Cookies from "js-cookie";
 import bgSidebar from "../assets/bg-sidebar.jpg";
 
 // Importing icons from lucide-react
-import { Store, Award, Tag, UserPlus, LogOut, Diamond } from "lucide-react";
+import {
+  Store,
+  Award,
+  Tag,
+  UserPlus,
+  LogOut,
+  Diamond,
+  NotepadText,
+} from "lucide-react";
 
 const Sidebar = () => {
   const [openMenu, setOpenMenu] = useState(null);
@@ -126,6 +134,41 @@ const Sidebar = () => {
               </ul>
             )}
           </li>
+
+          <li className="mb-2">
+            <button
+              onClick={() => handleMenuClick("reports")}
+              className={`block py-2 px-4 rounded w-full text-left hover:bg-blue-500 hover:text-white ${
+                openMenu === "reports" ? "bg-blue-600 text-white" : ""
+              }`}
+            >
+              <div className="flex items-center">
+                <NotepadText className="mr-2" size={22} />{" "}
+                {/* Changed to NotepadText icon */}
+                <span>Reports</span>
+              </div>
+            </button>
+            {openMenu === "reports" && (
+              <ul className="pl-6 mt-2">
+                <li className="mb-2">
+                  <Link
+                    to="/WishlistReport"
+                    className={`block py-2 px-4 rounded ${
+                      isActive("/WishlistReport")
+                        ? "bg-blue-600 text-white hover:bg-blue-500"
+                        : "hover:bg-blue-500 hover:text-white text-black"
+                    }`}
+                  >
+                    <div className="flex items-center">
+                      <Diamond size={14} className="mr-2" />
+                      View Wishlist Report
+                    </div>
+                  </Link>
+                </li>
+              </ul>
+            )}
+          </li>
+
           <li className="mb-2">
             <button
               onClick={() => handleMenuClick("promotions")}
