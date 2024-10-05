@@ -25,6 +25,8 @@ import AddPromotion from "../screens/Promotion/AddPromotion.jsx";
 import PromotionList from "../screens/Promotion/PromotionList.jsx";
 import UpdatePromotion from "../screens/Promotion/UpdatePromotion.jsx";
 import WishlistReport from "../screens/Reports/WishlistReport.jsx";
+import LoyaltyReport from "../screens/Loyalty/LoyaltyReport.jsx";
+import LoyaltyList from "../screens/Loyalty/LoyaltyList.jsx";
 
 const AppRoutes = () => {
   return (
