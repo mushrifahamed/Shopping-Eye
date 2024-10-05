@@ -69,7 +69,7 @@ const ProductDetail = ({ route }) => {
         try {
           await axios.post(`http://${IPAddress}:8089/api/tapcount/handletap`, {
             objectId: fetchedProduct._id, // Use the fetched product ID
-            objectType: 'Product', // Specify the type as Product
+            objectType: "Product", // Specify the type as Product
           });
         } catch (err) {
           console.error("Failed to record tap count");

@@ -1,17 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { Text, View, StyleSheet, Button, Alert } from "react-native";
+import { Text, View, StyleSheet, Alert } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
-import axios from "axios";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 
 export default function BarcodeScanner() {
   const [hasPermission, setHasPermission] = useState(null);
-  const [test, setTest] = useState("close");
   const [loading, setLoading] = useState(false);
   const [scanned, setScanned] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
+    // Function to get camera permission
     const getBarCodeScannerPermissions = async () => {
       const { status } = await BarCodeScanner.requestPermissionsAsync();
       setHasPermission(status === "granted");
@@ -20,9 +19,27 @@ export default function BarcodeScanner() {
     getBarCodeScannerPermissions();
   }, []);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      // Simulate resetting the app by resetting key states
+      setScanned(false); // Reset scanned state
+      setLoading(false); // Reset loading state
+      setHasPermission(null); // Reset permission state, forces a re-check
+
+      // Recheck camera permissions each time the QR scanner is visited
+      const resetPermissions = async () => {
+        const { status } = await BarCodeScanner.requestPermissionsAsync();
+        setHasPermission(status === "granted");
+      };
+
+      resetPermissions(); // Check permissions again
+    }, [])
+  );
+
   const handleBarCodeScanned = async ({ type, data }) => {
     setScanned(true);
     setLoading(true);
+
     try {
       if (data) {
         setLoading(false);
@@ -32,9 +49,8 @@ export default function BarcodeScanner() {
       } else {
         Alert.alert(
           "No product found",
-          `The scanned barcode did not match ${data} any product.`
+          `The scanned barcode did not match any product.`
         );
-        setScanned(false);
       }
     } catch (error) {
       console.error("Error fetching product:", error);
@@ -42,6 +58,8 @@ export default function BarcodeScanner() {
         "Error",
         "There was a problem retrieving the product. Please try again."
       );
+    } finally {
+      setLoading(false); // Stop loading after the operation
     }
   };
 
@@ -55,15 +73,12 @@ export default function BarcodeScanner() {
   return (
     <View style={StyleSheet.absoluteFillObject}>
       {loading ? (
-        <></>
+        <Text>Loading...</Text>
       ) : (
-        <>
-          <BarCodeScanner
-            onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-            style={StyleSheet.absoluteFillObject}
-          />
-          {scanned && <Button title={test} onPress={() => setScanned(false)} />}
-        </>
+        <BarCodeScanner
+          onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+          style={StyleSheet.absoluteFillObject}
+        />
       )}
     </View>
   );
